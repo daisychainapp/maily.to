@@ -1,5 +1,5 @@
 {
-  "name": "@maily-to/core",
+  "name": "@daisychainapp/maily-to-core",
   "version": "0.0.22",
   "description": "Powerful editor for creating beautiful, pre-designed, mobile-ready emails.",
   "private": false,
@@ -102,5 +102,10 @@
   },
   "publishConfig": {
     "access": "public"
-  }
+  },
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/arikchakma/maily.to/issues"
+  },
+  "homepage": "https://github.com/arikchakma/maily.to#readme"
 }
