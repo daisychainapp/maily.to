@@ -8,7 +8,6 @@ import { Select } from '../ui/select';
 import { TooltipProvider } from '../ui/tooltip';
 import { ImageSize } from './image-size';
 import { useImageState } from './use-image-state';
-import { ShowPopover } from '../show-popover';
 import { AllowedLogoSize, allowedLogoSize } from '@/editor/nodes/logo/logo';
 import { sticky } from 'tippy.js';
 
@@ -156,20 +155,6 @@ export function ImageBubbleMenu(props: EditorBubbleMenuProps) {
             </div>
           </>
         )}
-
-        <Divider />
-        <ShowPopover
-          showIfKey={state.currentShowIfKey}
-          onShowIfKeyValueChange={(value) => {
-            editor
-              ?.chain()
-              .updateAttributes(state.isLogoActive ? 'logo' : 'image', {
-                showIfKey: value,
-              })
-              .run();
-          }}
-          editor={editor}
-        />
       </TooltipProvider>
     </BubbleMenu>
   );

@@ -13,7 +13,6 @@ import { BorderColor } from '../icons/border-color';
 import { MarginIcon } from '../icons/margin-icon';
 import { PaddingIcon } from '../icons/padding-icon';
 import { Popover, PopoverContent, PopoverTrigger } from '../popover';
-import { ShowPopover } from '../show-popover';
 import { EditorBubbleMenuProps } from '../text-menu/text-bubble-menu';
 import { ColorPicker } from '../ui/color-picker';
 import { Divider } from '../ui/divider';
@@ -228,18 +227,6 @@ export function SectionBubbleMenu(props: EditorBubbleMenuProps) {
           command={() => {
             deleteNode(editor, 'section');
           }}
-        />
-
-        <Divider />
-
-        <ShowPopover
-          showIfKey={state.currentShowIfKey}
-          onShowIfKeyValueChange={(value) => {
-            editor.commands.updateSection({
-              showIfKey: value,
-            });
-          }}
-          editor={editor}
         />
 
         {state.isColumnsActive && (
