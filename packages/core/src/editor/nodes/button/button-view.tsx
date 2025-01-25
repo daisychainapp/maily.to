@@ -17,7 +17,6 @@ import {
   AllowedButtonVariant,
   allowedButtonVariant,
 } from './button';
-import { ShowPopover } from '@/editor/components/show-popover';
 import { ButtonLabelInput } from './button-label-input';
 import { DEFAULT_RENDER_VARIABLE_FUNCTION } from '@/editor/provider';
 import { useMailyContext } from '@/editor/provider';
@@ -201,18 +200,6 @@ export function ButtonView(props: NodeViewProps) {
                   }}
                 />
               </div>
-
-              <Divider />
-
-              <ShowPopover
-                showIfKey={showIfKey}
-                onShowIfKeyValueChange={(value) => {
-                  updateAttributes({
-                    showIfKey: value,
-                  });
-                }}
-                editor={editor}
-              />
             </div>
           </TooltipProvider>
         </PopoverContent>
