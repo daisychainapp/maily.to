@@ -23,6 +23,10 @@ export function ImageBubbleMenu(props: EditorBubbleMenuProps) {
     ...props,
     ...(appendTo ? { appendTo: appendTo.current } : {}),
     shouldShow: ({ editor }) => {
+      if (!editor.isEditable) {
+        return false;
+      }
+
       return editor.isActive('logo') || editor.isActive('image');
     },
     tippyOptions: {
