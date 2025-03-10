@@ -99,17 +99,6 @@ export function useTurnIntoBlockOptions(editor: Editor) {
         type: 'option',
       },
       {
-        id: 'footer',
-        type: 'option',
-        label: 'Footer',
-        icon: FootprintsIcon,
-        onClick: () => {
-          editor.chain().focus().liftListItem('listItem').setFooter().run();
-        },
-        disabled: () => !editor.can().setFooter(),
-        isActive: () => editor.isActive('footer'),
-      },
-      {
         type: 'category',
         label: 'Lists',
         id: 'lists',
