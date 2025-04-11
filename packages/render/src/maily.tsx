@@ -24,6 +24,7 @@ import { generateKey } from './utils';
 import type { MetaDescriptors } from './meta';
 import { meta } from './meta';
 import { parse } from 'node-html-parser';
+import juice from 'juice';
 
 interface NodeOptions {
   parent?: JSONContent;
@@ -89,15 +90,16 @@ export interface ThemeOptions {
     linkCardBadgeBackground: string;
     linkCardSubTitle: string;
   }>;
+  container?: Partial<CSSProperties>;
   fontSize?: Partial<{
-    paragraph: {
+    paragraph: Partial<{
       size: string;
       lineHeight: string;
-    };
-    footer: {
+    }>;
+    footer: Partial<{
       size: string;
       lineHeight: string;
-    };
+    }>;
   }>;
 }
 
@@ -171,6 +173,14 @@ const DEFAULT_THEME: ThemeOptions = {
     linkCardBadgeText: '#111827',
     linkCardBadgeBackground: '#FEF08A',
     linkCardSubTitle: '#6B7280',
+  },
+  container: {
+    maxWidth: '600px',
+    minWidth: '300px',
+    width: '100%',
+    marginLeft: 'auto',
+    marginRight: 'auto',
+    padding: '0.5rem',
   },
   fontSize: {
     paragraph: {
@@ -481,6 +491,7 @@ export class Maily {
     options: RenderOptions = DEFAULT_RENDER_OPTIONS
   ): Promise<string> {
     const markup = this.markup();
+
     return reactEmailRenderAsync(markup, options);
   }
 
@@ -508,6 +519,7 @@ export class Maily {
     const { preview } = this.config;
     const tags = meta(this.meta);
     const htmlProps = this.htmlProps;
+    const containerStyles = this.config.theme?.container;
 
     const markup = (
       <Html {...htmlProps}>
@@ -527,7 +539,6 @@ export class Maily {
               __html: `blockquote,h1,h2,h3,img,li,ol,p,ul{margin-top:0;margin-bottom:0}@media only screen and (max-width:425px){.tab-row-full{width:100%!important}.tab-col-full{display:block!important;width:100%!important}.tab-pad{padding:0!important}}`,
             }}
           />
-
           {tags}
         </Head>
         <Body
@@ -538,18 +549,7 @@ export class Maily {
           {preview ? (
             <Preview id="__react-email-preview">{preview}</Preview>
           ) : null}
-          <Container
-            style={{
-              maxWidth: '600px',
-              minWidth: '300px',
-              width: '100%',
-              marginLeft: 'auto',
-              marginRight: 'auto',
-              padding: '0.5rem',
-            }}
-          >
-            {jsxNodes}
-          </Container>
+          <Container style={containerStyles}>{jsxNodes}</Container>
           {this.openTrackingPixel ? (
             <Img
               alt=""
@@ -1152,9 +1152,11 @@ export class Maily {
       alt,
       title,
       width = 'auto',
+      height = 'auto',
       alignment = 'center',
       externalLink = '',
       isExternalLinkVariable,
+      borderRadius = 0,
     } = attrs || {};
 
     const shouldShow = this.shouldShow(node, options);
@@ -1176,17 +1178,23 @@ export class Maily {
     const imageWidth = width === 'auto' ? 'auto' : Number(width);
     const widthStyle = imageWidth === 'auto' ? 'auto' : `${imageWidth}px`;
 
+    // Handle height value
+    const imageHeight = height === 'auto' ? 'auto' : Number(height);
+    const heightStyle = imageHeight === 'auto' ? 'auto' : `${imageHeight}px`;
+
     const mainImage = (
       <Img
         alt={alt || title || 'Image'}
         src={src}
         style={{
           width: widthStyle, // Use the calculated width
+          height: heightStyle, // Use the calculated height
           maxWidth: '100%', // Ensure image doesn't overflow container
           outline: 'none',
           border: 'none',
           textDecoration: 'none',
           display: 'block', // Prevent unwanted spacing
+          borderRadius,
         }}
         title={title || alt || 'Image'}
       />
@@ -1733,13 +1741,15 @@ export class Maily {
 
         return acc;
       }, '') || '';
-    const doc = parse(text);
 
-    // remove head if exists
-    const head = doc.querySelector('head');
+    // we will inline the css in the html
+    // so that it can be rendered properly
+    const inlineCssHtml = juice(text);
+    const doc = parse(inlineCssHtml);
+    const head = doc?.querySelector('head');
     head?.remove();
-
     const html = doc.toString();
+
     return (
       <table
         align="left"

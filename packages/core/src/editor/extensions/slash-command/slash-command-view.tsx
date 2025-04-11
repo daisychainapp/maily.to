@@ -1,12 +1,13 @@
 import { BlockGroupItem, BlockItem } from '@/blocks/types';
 import { cn } from '@/editor/utils/classname';
-import { Editor } from '@tiptap/core';
+import { Editor, Range } from '@tiptap/core';
 import { ReactRenderer } from '@tiptap/react';
 import { SuggestionOptions } from '@tiptap/suggestion';
 import {
   forwardRef,
   Fragment,
   KeyboardEvent,
+  RefObject,
   useCallback,
   useEffect,
   useImperativeHandle,
@@ -14,32 +15,30 @@ import {
   useRef,
   useState,
 } from 'react';
-import tippy, { GetReferenceClientRect } from 'tippy.js';
+import tippy, { GetReferenceClientRect, Instance } from 'tippy.js';
 import { DEFAULT_SLASH_COMMANDS } from './default-slash-commands';
-import { ChevronRightIcon } from 'lucide-react';
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from '@/editor/components/ui/tooltip';
+import { TooltipProvider } from '@/editor/components/ui/tooltip';
+import { SlashCommandItem } from './slash-command-item';
+import { filterSlashCommands } from './slash-command-search';
 
 type CommandListProps = {
   items: BlockGroupItem[];
   command: (item: BlockItem) => void;
   editor: Editor;
-  range: any;
+  range: Range;
   query: string;
 };
 
-const CommandList = forwardRef(function CommandList(
-  props: CommandListProps,
-  ref
-) {
-  const { items: groups, command, editor } = props;
+const CommandList = forwardRef<unknown, CommandListProps>((props, ref) => {
+  const { items: groups, command, editor, range, query } = props;
 
   const [selectedGroupIndex, setSelectedGroupIndex] = useState(0);
   const [selectedCommandIndex, setSelectedCommandIndex] = useState(0);
+  const [hoveredItemKey, setHoveredItemKey] = useState<string | null>(null);
+
+  const prevQuery = useRef('');
+  const prevSelectedGroupIndex = useRef(0);
+  const prevSelectedCommandIndex = useRef(0);
 
   const selectItem = useCallback(
     (groupIndex: number, commandIndex: number) => {
@@ -55,72 +54,105 @@ const CommandList = forwardRef(function CommandList(
 
   useImperativeHandle(ref, () => ({
     onKeyDown: ({ event }: { event: KeyboardEvent }) => {
-      const navigationKeys = ['ArrowUp', 'ArrowDown', 'Enter'];
+      const navigationKeys = [
+        'ArrowUp',
+        'ArrowDown',
+        'Enter',
+        'ArrowLeft',
+        'ArrowRight',
+      ];
       if (navigationKeys.includes(event.key)) {
-        if (event.key === 'ArrowUp') {
-          if (!groups.length) {
+        let newCommandIndex = selectedCommandIndex;
+        let newGroupIndex = selectedGroupIndex;
+
+        switch (event.key) {
+          case 'ArrowLeft':
+            event.preventDefault();
+
+            const group = groups?.[selectedGroupIndex];
+            const isInsideSubCommand = group && 'id' in group;
+            if (!isInsideSubCommand) {
+              return false;
+            }
+
+            editor
+              .chain()
+              .focus()
+              .insertContentAt(range, `/${prevQuery.current}`)
+              .run();
+            setTimeout(() => {
+              setSelectedGroupIndex(prevSelectedGroupIndex.current);
+              setSelectedCommandIndex(prevSelectedCommandIndex.current);
+            }, 0);
+            return true;
+          case 'ArrowRight':
+            event.preventDefault();
+
+            const command =
+              groups?.[selectedGroupIndex]?.commands?.[selectedCommandIndex];
+            const isSelectingSubCommand = command && 'commands' in command;
+            if (!isSelectingSubCommand) {
+              return false;
+            }
+
+            selectItem(selectedGroupIndex, selectedCommandIndex);
+            prevQuery.current = query;
+            prevSelectedGroupIndex.current = selectedGroupIndex;
+            prevSelectedCommandIndex.current = selectedCommandIndex;
+            return true;
+          case 'Enter':
+            if (!groups.length) {
+              return false;
+            }
+            selectItem(selectedGroupIndex, selectedCommandIndex);
+
+            prevQuery.current = query;
+            prevSelectedGroupIndex.current = selectedGroupIndex;
+            prevSelectedCommandIndex.current = selectedCommandIndex;
+            return true;
+          case 'ArrowUp':
+            if (!groups.length) {
+              return false;
+            }
+            newCommandIndex = selectedCommandIndex - 1;
+            newGroupIndex = selectedGroupIndex;
+            if (newCommandIndex < 0) {
+              newGroupIndex = selectedGroupIndex - 1;
+              newCommandIndex = groups[newGroupIndex]?.commands.length - 1 || 0;
+            }
+            if (newGroupIndex < 0) {
+              newGroupIndex = groups.length - 1;
+              newCommandIndex = groups[newGroupIndex]?.commands.length - 1 || 0;
+            }
+            setSelectedGroupIndex(newGroupIndex);
+            setSelectedCommandIndex(newCommandIndex);
+            return true;
+          case 'ArrowDown':
+            if (!groups.length) {
+              return false;
+            }
+            const commands = groups[selectedGroupIndex].commands;
+            newCommandIndex = selectedCommandIndex + 1;
+            newGroupIndex = selectedGroupIndex;
+            if (commands.length - 1 < newCommandIndex) {
+              newCommandIndex = 0;
+              newGroupIndex = selectedGroupIndex + 1;
+            }
+            if (groups.length - 1 < newGroupIndex) {
+              newGroupIndex = 0;
+            }
+            setSelectedGroupIndex(newGroupIndex);
+            setSelectedCommandIndex(newCommandIndex);
+            return true;
+          default:
             return false;
-          }
-
-          let newCommandIndex = selectedCommandIndex - 1;
-          let newGroupIndex = selectedGroupIndex;
-
-          if (newCommandIndex < 0) {
-            newGroupIndex = selectedGroupIndex - 1;
-            newCommandIndex = groups[newGroupIndex]?.commands.length - 1 || 0;
-          }
-
-          if (newGroupIndex < 0) {
-            newGroupIndex = groups.length - 1;
-            newCommandIndex = groups[newGroupIndex]?.commands.length - 1 || 0;
-          }
-
-          setSelectedGroupIndex(newGroupIndex);
-          setSelectedCommandIndex(newCommandIndex);
-          return true;
         }
-        if (event.key === 'ArrowDown') {
-          if (!groups.length) {
-            return false;
-          }
-
-          const commands = groups[selectedGroupIndex].commands;
-          let newCommandIndex = selectedCommandIndex + 1;
-          let newGroupIndex = selectedGroupIndex;
-
-          if (commands.length - 1 < newCommandIndex) {
-            newCommandIndex = 0;
-            newGroupIndex = selectedGroupIndex + 1;
-          }
-
-          if (groups.length - 1 < newGroupIndex) {
-            newGroupIndex = 0;
-          }
-
-          setSelectedGroupIndex(newGroupIndex);
-          setSelectedCommandIndex(newCommandIndex);
-          return true;
-        }
-        if (event.key === 'Enter') {
-          if (!groups.length) {
-            return false;
-          }
-
-          selectItem(selectedGroupIndex, selectedCommandIndex);
-          return true;
-        }
-        return false;
       }
     },
   }));
 
-  useEffect(() => {
-    setSelectedGroupIndex(0);
-    setSelectedCommandIndex(0);
-  }, [groups]);
-
   const commandListContainer = useRef<HTMLDivElement>(null);
-  const activeCommandRef = useRef<HTMLButtonElement>(null);
+  const activeCommandRef = useRef<HTMLButtonElement | null>(null);
 
   useLayoutEffect(() => {
     const container = commandListContainer?.current;
@@ -130,6 +162,7 @@ const CommandList = forwardRef(function CommandList(
     }
 
     const { offsetTop, offsetHeight } = activeCommandContainer;
+    container.style.transition = 'none';
     container.scrollTop = offsetTop - offsetHeight;
   }, [
     selectedGroupIndex,
@@ -138,13 +171,30 @@ const CommandList = forwardRef(function CommandList(
     activeCommandRef,
   ]);
 
-  return groups.length > 0 ? (
+  useEffect(() => {
+    setSelectedGroupIndex(0);
+    setSelectedCommandIndex(0);
+  }, [groups]);
+
+  useEffect(() => {
+    return () => {
+      prevQuery.current = '';
+      prevSelectedGroupIndex.current = 0;
+      prevSelectedCommandIndex.current = 0;
+    };
+  }, []);
+
+  if (!groups || groups.length === 0) {
+    return null;
+  }
+
+  return (
     <TooltipProvider>
       <div className="mly-z-50 mly-w-72 mly-overflow-hidden mly-rounded-md mly-border mly-border-gray-200 mly-bg-white mly-shadow-md mly-transition-all">
         <div
           id="slash-command"
           ref={commandListContainer}
-          className="mly-no-scrollbar mly-h-auto mly-max-h-[330px] mly-overflow-y-auto mly-scroll-smooth"
+          className="mly-no-scrollbar mly-h-auto mly-max-h-[330px] mly-overflow-y-auto"
         >
           {groups.map((group, groupIndex) => (
             <Fragment key={groupIndex}>
@@ -158,85 +208,23 @@ const CommandList = forwardRef(function CommandList(
               </span>
               <div className="mly-space-y-0.5 mly-p-1">
                 {group.commands.map((item, commandIndex) => {
-                  const isActive =
-                    groupIndex === selectedGroupIndex &&
-                    commandIndex === selectedCommandIndex;
-                  const isSubCommand = 'commands' in item;
-
-                  const hasRenderFunction = typeof item.render === 'function';
-                  const renderFunctionValue = hasRenderFunction
-                    ? item.render?.(editor)
-                    : null;
-
-                  let value = (
-                    <>
-                      <div className="mly-flex mly-h-6 mly-w-6 mly-shrink-0 mly-items-center mly-justify-center">
-                        {item.icon}
-                      </div>
-                      <div className="mly-grow">
-                        <p className="mly-font-medium">{item.title}</p>
-                        <p className="mly-text-xs mly-text-gray-400">
-                          {item.description}
-                        </p>
-                      </div>
-
-                      {isSubCommand && (
-                        <span className="mly-block mly-px-1 mly-text-gray-400">
-                          <ChevronRightIcon className="mly-size-3.5 mly-stroke-[2.5]" />
-                        </span>
-                      )}
-                    </>
-                  );
-
-                  if (
-                    renderFunctionValue !== null &&
-                    renderFunctionValue !== true
-                  ) {
-                    value = renderFunctionValue!;
-                  }
-
-                  const shouldOpenTooltip = !!item?.preview && isActive;
-
+                  const itemKey = `${groupIndex}-${commandIndex}`;
                   return (
-                    <Tooltip open={shouldOpenTooltip} key={commandIndex}>
-                      <TooltipTrigger asChild>
-                        <button
-                          className={cn(
-                            'mly-flex mly-w-full mly-items-center mly-gap-2 mly-rounded-md mly-px-2 mly-py-1 mly-text-left mly-text-sm mly-text-gray-900 hover:mly-bg-gray-100 hover:mly-text-gray-900',
-                            isActive
-                              ? 'mly-bg-gray-100 mly-text-gray-900'
-                              : 'mly-bg-transparent'
-                          )}
-                          onClick={() => selectItem(groupIndex, commandIndex)}
-                          type="button"
-                          ref={isActive ? activeCommandRef : null}
-                        >
-                          {value}
-                        </button>
-                      </TooltipTrigger>
-                      <TooltipContent
-                        side="right"
-                        sideOffset={10}
-                        className="mly-w-52 mly-rounded-lg mly-border-none mly-p-1 mly-shadow"
-                      >
-                        {typeof item.preview === 'function' ? (
-                          item?.preview(editor)
-                        ) : (
-                          <>
-                            <figure className="mly-relative mly-aspect-[2.5] mly-w-full mly-overflow-hidden mly-rounded-md mly-border mly-border-gray-200">
-                              <img
-                                src={item?.preview}
-                                alt={item?.title}
-                                className="mly-absolute mly-inset-0 mly-h-full mly-w-full mly-object-cover"
-                              />
-                            </figure>
-                            <p className="mly-mt-2 mly-px-0.5 mly-text-gray-500">
-                              {item.description}
-                            </p>
-                          </>
-                        )}
-                      </TooltipContent>
-                    </Tooltip>
+                    <SlashCommandItem
+                      key={itemKey}
+                      item={item}
+                      groupIndex={groupIndex}
+                      commandIndex={commandIndex}
+                      selectedGroupIndex={selectedGroupIndex}
+                      selectedCommandIndex={selectedCommandIndex}
+                      selectItem={() => selectItem(groupIndex, commandIndex)}
+                      editor={editor}
+                      activeCommandRef={activeCommandRef}
+                      hoveredItemKey={hoveredItemKey}
+                      onHover={(isHovered) =>
+                        setHoveredItemKey(isHovered ? itemKey : null)
+                      }
+                    />
                   );
                 })}
               </div>
@@ -267,7 +255,7 @@ const CommandList = forwardRef(function CommandList(
         </div>
       </div>
     </TooltipProvider>
-  ) : null;
+  );
 });
 
 export function getSlashCommandSuggestions(
@@ -275,104 +263,7 @@ export function getSlashCommandSuggestions(
 ): Omit<SuggestionOptions, 'editor'> {
   return {
     items: ({ query, editor }) => {
-      let newGroups = groups;
-
-      let search = query.toLowerCase();
-      const subCommandIds = newGroups
-        .map((group) => {
-          return (
-            group.commands
-              .filter((item) => 'commands' in item)
-              // @ts-ignore
-              .map((item) => item?.id.toLowerCase())
-          );
-        })
-        .flat()
-        .map((id) => `${id}.`);
-
-      const shouldEnterSubCommand = subCommandIds.some((id) =>
-        search.startsWith(id)
-      );
-
-      if (shouldEnterSubCommand) {
-        const subCommandId = subCommandIds.find((id) => search.startsWith(id));
-        const sanitizedSubCommandId = subCommandId?.slice(0, -1);
-
-        const group = newGroups
-          .find((group) => {
-            return group.commands.some(
-              // @ts-ignore
-              (item) => item?.id?.toLowerCase() === sanitizedSubCommandId
-            );
-          })
-          ?.commands.find(
-            // @ts-ignore
-            (item) => item?.id?.toLowerCase() === sanitizedSubCommandId
-          );
-
-        if (!group) {
-          return groups;
-        }
-
-        search = search.replace(subCommandId || '', '');
-        newGroups = [
-          {
-            ...group,
-            commands: group?.commands || [],
-          },
-        ];
-      }
-
-      const filteredGroups = newGroups
-        .map((group) => {
-          return {
-            ...group,
-            commands: group.commands
-              .filter((item) => {
-                if (typeof query === 'string' && query.length > 0) {
-                  const show = item?.render?.(editor);
-                  if (show === null) {
-                    return false;
-                  }
-
-                  return (
-                    item.title.toLowerCase().includes(search) ||
-                    (item?.description &&
-                      item?.description.toLowerCase().includes(search)) ||
-                    (item.searchTerms &&
-                      item.searchTerms.some((term: string) =>
-                        term.includes(search)
-                      ))
-                  );
-                }
-                return true;
-              })
-              .map((item) => {
-                const isSubCommandItem = 'commands' in item;
-                if (isSubCommandItem) {
-                  // so to make it work with the enter key
-                  // we make it a command
-                  // @ts-ignore
-                  item = {
-                    ...item,
-                    command: (options) => {
-                      const { editor, range } = options;
-                      editor
-                        .chain()
-                        .focus()
-                        .insertContentAt(range, `/${item.id}.`)
-                        .run();
-                    },
-                  };
-                }
-
-                return item;
-              }),
-          };
-        })
-        .filter((group) => group.commands.length > 0);
-
-      return filteredGroups;
+      return filterSlashCommands({ query, editor, groups });
     },
     allow: ({ editor }) => {
       const isInsideHTMLCodeBlock = editor.isActive('htmlCodeBlock');
@@ -384,7 +275,7 @@ export function getSlashCommandSuggestions(
     },
     render: () => {
       let component: ReactRenderer<any>;
-      let popup: InstanceType<any> | null = null;
+      let popup: Instance<any>[] | null = null;
 
       return {
         onStart: (props) => {
@@ -400,20 +291,28 @@ export function getSlashCommandSuggestions(
             showOnCreate: true,
             interactive: true,
             trigger: 'manual',
+            placement: 'top-start',
           });
         },
         onUpdate: (props) => {
-          component?.updateProps(props);
+          const currentPopup = popup?.[0];
+          if (!currentPopup || currentPopup?.state?.isDestroyed) {
+            return;
+          }
 
-          popup &&
-            popup[0].setProps({
-              getReferenceClientRect: props.clientRect,
-            });
+          component?.updateProps(props);
+          currentPopup.setProps({
+            getReferenceClientRect: props.clientRect,
+          });
         },
         onKeyDown: (props) => {
           if (props.event.key === 'Escape') {
-            popup?.[0].hide();
+            const currentPopup = popup?.[0];
+            if (!currentPopup?.state?.isDestroyed) {
+              currentPopup?.destroy();
+            }
 
+            component?.destroy();
             return true;
           }
 
@@ -424,7 +323,11 @@ export function getSlashCommandSuggestions(
             return;
           }
 
-          popup?.[0].destroy();
+          const currentPopup = popup?.[0];
+          if (!currentPopup.state.isDestroyed) {
+            currentPopup.destroy();
+          }
+
           component?.destroy();
         },
       };
