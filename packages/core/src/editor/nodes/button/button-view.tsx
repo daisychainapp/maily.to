@@ -260,18 +260,6 @@ export function ButtonView(props: NodeViewProps) {
                   }}
                 />
               </div>
-
-              <Divider />
-
-              <ShowPopover
-                showIfKey={showIfKey}
-                onShowIfKeyValueChange={(value) => {
-                  updateAttributes({
-                    showIfKey: value,
-                  });
-                }}
-                editor={editor}
-              />
             </div>
           </TooltipProvider>
         </PopoverContent>
