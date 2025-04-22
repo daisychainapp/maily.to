@@ -66,14 +66,6 @@ export function SpacerBubbleMenu(props: EditorBubbleMenuProps) {
             {...item}
           />
         ))}
-        <Divider />
-        <ShowPopover
-          showIfKey={state.currentShowIfKey}
-          onShowIfKeyValueChange={(value) => {
-            editor.commands.setSpacerShowIfKey(value);
-          }}
-          editor={editor}
-        />
       </TooltipProvider>
     </BubbleMenu>
   );
