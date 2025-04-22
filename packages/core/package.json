@@ -1,5 +1,5 @@
 {
-  "name": "@maily-to/core",
+  "name": "@daisychainapp/maily-to-core",
   "type": "module",
   "version": "0.2.9",
   "description": "Powerful editor for creating beautiful, pre-designed, mobile-ready emails.",
