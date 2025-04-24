@@ -93,33 +93,6 @@ export function ImageBubbleMenu(props: EditorBubbleMenuProps) {
             }}
           />
 
-          <LinkInputPopover
-            defaultValue={state?.imageSrc ?? ''}
-            onValueChange={(value, isVariable) => {
-              if (state.isLogoActive) {
-                editor
-                  ?.chain()
-                  .setLogoAttributes({
-                    src: value,
-                    isSrcVariable: isVariable ?? false,
-                  })
-                  .run();
-              } else {
-                editor
-                  ?.chain()
-                  .updateAttributes('image', {
-                    src: value,
-                    isSrcVariable: isVariable ?? false,
-                  })
-                  .run();
-              }
-            }}
-            tooltip="Source URL"
-            icon={ImageDown}
-            editor={editor}
-            isVariable={state.isSrcVariable}
-          />
-
           {state.isImageActive && (
             <LinkInputPopover
               defaultValue={state?.imageExternalLink ?? ''}

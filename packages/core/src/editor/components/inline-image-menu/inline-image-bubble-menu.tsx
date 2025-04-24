@@ -48,23 +48,6 @@ export function InlineImageBubbleMenu(props: EditorBubbleMenuProps) {
       <TooltipProvider>
         <div className="mly-flex mly-space-x-0.5">
           <LinkInputPopover
-            defaultValue={state?.src ?? ''}
-            onValueChange={(value, isVariable) => {
-              editor
-                ?.chain()
-                .updateAttributes('inlineImage', {
-                  src: value,
-                  isSrcVariable: isVariable ?? false,
-                })
-                .run();
-            }}
-            tooltip="Source URL"
-            icon={ImageDownIcon}
-            editor={editor}
-            isVariable={state.isSrcVariable}
-          />
-
-          <LinkInputPopover
             defaultValue={state?.imageExternalLink ?? ''}
             onValueChange={(value, isVariable) => {
               editor
