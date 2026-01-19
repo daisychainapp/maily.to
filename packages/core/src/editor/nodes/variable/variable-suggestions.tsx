@@ -14,7 +14,12 @@ import {
 import { VariableSuggestionsPopoverRef } from './variable-suggestions-popover';
 
 export type VariableListProps = {
-  command: (params: { id: string; required: boolean }) => void;
+  command: (params: {
+    id: string;
+    required: boolean;
+    hideDefaultValue: boolean;
+    label?: string;
+  }) => void;
   items: VariableType[];
 } & SuggestionOptions;
 
@@ -60,6 +65,8 @@ export const VariableList = forwardRef((props: VariableListProps, ref) => {
         props.command({
           id: value.name,
           required: value.required ?? true,
+          hideDefaultValue: value?.hideDefaultValue ?? false,
+          label: value?.label,
         });
       }}
       ref={popoverRef}

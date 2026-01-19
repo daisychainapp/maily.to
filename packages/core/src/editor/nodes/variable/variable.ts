@@ -15,6 +15,13 @@ export type Variable = {
   required?: boolean;
   // default is true
   valid?: boolean;
+  // should hide default value
+  // default is false
+  hideDefaultValue?: boolean;
+
+  // label is the label of the variable
+  // default is the name of the variable
+  label?: string;
 };
 
 export type VariableFunctionOptions = {
@@ -67,6 +74,13 @@ export type VariableOptions = {
    * @default VariableSuggestionPopover
    */
   variableSuggestionsPopover: VariableSuggestionsPopoverType;
+
+  /**
+   * Disable input is the boolean that will be used to disable the input of the variable
+   * when the variable is selected.
+   * @default false
+   */
+  disableInput: boolean;
 };
 
 export type VariableStorage = {
@@ -93,6 +107,7 @@ export const VariableExtension = Node.create<VariableOptions, VariableStorage>({
       variables: DEFAULT_VARIABLES,
       variableSuggestionsPopover: DEFAULT_VARIABLE_SUGGESTION_POPOVER,
       renderVariable: DEFAULT_RENDER_VARIABLE_FUNCTION,
+      disableInput: false,
 
       renderLabel(props) {
         const { node } = props;
@@ -193,6 +208,10 @@ export const VariableExtension = Node.create<VariableOptions, VariableStorage>({
           };
         },
       },
+
+      hideDefaultValue: {
+        default: false,
+      },
     };
   },
 
@@ -263,7 +282,7 @@ export const VariableExtension = Node.create<VariableOptions, VariableStorage>({
 
   addNodeView() {
     return ReactNodeViewRenderer(VariableView, {
-      className: 'mly-relative mly-inline-block',
+      className: 'mly:relative mly:inline-block',
       as: 'div',
     });
   },

@@ -49,6 +49,8 @@ export type EditorProps = {
     immediatelyRender?: boolean;
   };
   editable?: boolean;
+  scrollThreshold?: number;
+  scrollMargin?: number;
 } & ParitialMailContextType;
 
 export function Editor(props: EditorProps) {
@@ -71,6 +73,8 @@ export function Editor(props: EditorProps) {
     blocks = DEFAULT_SLASH_COMMANDS,
     editable = true,
     placeholderUrl = DEFAULT_PLACEHOLDER_URL,
+    scrollThreshold = 40,
+    scrollMargin = 40,
   } = props;
 
   const formattedContent = useMemo(() => {
@@ -102,8 +106,10 @@ export function Editor(props: EditorProps) {
   const menuContainerRef = useRef(null);
   const editor = useEditor({
     editorProps: {
+      scrollThreshold,
+      scrollMargin,
       attributes: {
-        class: cn(`mly-prose mly-w-full`, contentClassName),
+        class: cn('mly:prose mly:w-full', contentClassName),
         spellCheck: spellCheck ? 'true' : 'false',
       },
     },
@@ -130,8 +136,9 @@ export function Editor(props: EditorProps) {
   return (
     <MailyProvider placeholderUrl={placeholderUrl}>
       <div
+        id="mly-editor"
         className={cn(
-          'mly-editor mly-antialiased',
+          'mly-editor mly:antialiased',
           editor.isEditable ? 'mly-editable' : 'mly-not-editable',
           wrapClassName
         )}
@@ -140,7 +147,7 @@ export function Editor(props: EditorProps) {
         {hasMenuBar && <EditorMenuBar config={props.config} editor={editor} />}
         <div
           className={cn(
-            'mly-mt-4 mly-rounded mly-border mly-border-gray-200 mly-bg-white mly-p-4',
+            'mly:mt-4 mly:rounded mly:border mly:border-gray-200 mly:bg-white mly:p-4',
             bodyClassName
           )}
         >

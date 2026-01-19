@@ -6,7 +6,6 @@ import { ImageDown, LockIcon, LockOpenIcon } from 'lucide-react';
 import { sticky } from 'tippy.js';
 import { AlignmentSwitch } from '../alignment-switch';
 import { BubbleMenuButton } from '../bubble-menu-button';
-import { ShowPopover } from '../show-popover';
 import { EditorBubbleMenuProps } from '../text-menu/text-bubble-menu';
 import { Divider } from '../ui/divider';
 import { LinkInputPopover } from '../ui/link-input-popover';
@@ -14,8 +13,10 @@ import { Select } from '../ui/select';
 import { TooltipProvider } from '../ui/tooltip';
 import { ImageSize } from './image-size';
 import { useImageState } from './use-image-state';
-import { AllowedLogoSize, allowedLogoSize } from '@/editor/nodes/logo/logo';
-import { sticky } from 'tippy.js';
+import {
+  IMAGE_MAX_HEIGHT,
+  IMAGE_MAX_WIDTH,
+} from '@/editor/nodes/image/image-view';
 
 export function ImageBubbleMenu(props: EditorBubbleMenuProps) {
   const { editor, appendTo } = props;
@@ -50,7 +51,7 @@ export function ImageBubbleMenu(props: EditorBubbleMenuProps) {
   return (
     <BubbleMenu
       {...bubbleMenuProps}
-      className="mly-flex mly-rounded-lg mly-border mly-border-gray-200 mly-bg-white mly-p-0.5 mly-shadow-md"
+      className="mly:flex mly:rounded-lg mly:border mly:border-gray-200 mly:bg-white mly:p-0.5 mly:shadow-md"
     >
       <TooltipProvider>
         {state.isLogoActive && state.imageSrc && (
@@ -76,7 +77,7 @@ export function ImageBubbleMenu(props: EditorBubbleMenuProps) {
           </>
         )}
 
-        <div className="mly-flex mly-space-x-0.5">
+        <div className="mly:flex mly:gap-x-0.5">
           <AlignmentSwitch
             alignment={state.alignment}
             onAlignmentChange={(alignment) => {
@@ -159,10 +160,10 @@ export function ImageBubbleMenu(props: EditorBubbleMenuProps) {
                   .run();
               }}
               tooltip="Border Radius"
-              className="mly-capitalize"
+              className="mly:capitalize"
             />
 
-            <div className="mly-flex mly-space-x-0.5">
+            <div className="mly:flex mly:gap-x-0.5">
               <ImageSize
                 dimension="width"
                 value={state?.width ?? ''}

@@ -6,6 +6,9 @@ import tsconfigPaths from 'vite-tsconfig-paths';
 export default defineConfig(({ isSsrBuild, command }) => ({
   plugins: [tailwindcss(), reactRouter(), tsconfigPaths()],
   ssr: {
-    noExternal: [/^@maily-to\//, /^@radix-ui\//, /^@tiptap\//],
+    noExternal: [/^@maily-to\//, /^@radix-ui\//, /^@tiptap\//, 'lucide-react'],
+  },
+  resolve: {
+    conditions: ['import', 'module', 'browser', 'default'],
   },
 }));

@@ -5,7 +5,6 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from '@/editor/components/popover';
-import { ShowPopover } from '@/editor/components/show-popover';
 import { ColorPicker } from '@/editor/components/ui/color-picker';
 import { Divider } from '@/editor/components/ui/divider';
 import { LinkInputPopover } from '@/editor/components/ui/link-input-popover';
@@ -34,7 +33,6 @@ export function ButtonView(props: NodeViewProps) {
     buttonColor,
     textColor,
     url: externalLink,
-    showIfKey = '',
     isUrlVariable,
     paddingTop,
     paddingRight,
@@ -84,31 +82,39 @@ export function ButtonView(props: NodeViewProps) {
           <div>
             <button
               className={cn(
-                'mly-inline-flex mly-items-center mly-justify-center mly-rounded-md mly-text-sm mly-font-medium mly-ring-offset-white mly-transition-colors disabled:mly-pointer-events-none disabled:mly-opacity-50',
-                'mly-font-semibold mly-no-underline',
+                'mly:inline-flex mly:items-center mly:justify-center mly:rounded-md mly:text-sm mly:font-medium mly:ring-offset-white mly:transition-colors mly:disabled:pointer-events-none mly:disabled:opacity-50',
+                'mly:font-semibold mly:no-underline',
                 {
-                  '!mly-rounded-full': _radius === 'round',
-                  '!mly-rounded-md': _radius === 'smooth',
-                  '!mly-rounded-none': _radius === 'sharp',
+                  'mly:rounded-full!': _radius === 'round',
+                  'mly:rounded-md!': _radius === 'smooth',
+                  'mly:rounded-none!': _radius === 'sharp',
                 }
               )}
               tabIndex={-1}
               style={
                 {
                   backgroundColor:
-                    variant === 'filled' ? buttonColor : 'transparent',
-                  color: textColor,
+                    variant === 'filled'
+                      ? buttonColor || 'var(--mly-button-background-color)'
+                      : 'transparent',
+                  color: textColor || 'var(--mly-button-text-color)',
+
                   borderWidth: 2,
                   borderStyle: 'solid',
-                  borderColor: buttonColor,
+                  borderColor:
+                    buttonColor || 'var(--mly-button-background-color)',
                   // decrease the border color opacity to 80%
                   // so that it's not too prominent
-                  '--button-var-border-color': `${textColor}80`,
+                  '--button-var-border-color': textColor
+                    ? `${textColor}80`
+                    : 'color-mix(in srgb, var(--mly-button-text-color) 80%, transparent)',
 
-                  paddingTop,
-                  paddingRight,
-                  paddingBottom,
-                  paddingLeft,
+                  paddingTop: paddingTop || 'var(--mly-button-padding-top)',
+                  paddingRight:
+                    paddingRight || 'var(--mly-button-padding-right)',
+                  paddingBottom:
+                    paddingBottom || 'var(--mly-button-padding-bottom)',
+                  paddingLeft: paddingLeft || 'var(--mly-button-padding-left)',
                 } as CSSProperties
               }
               onClick={(e) => {
@@ -135,13 +141,13 @@ export function ButtonView(props: NodeViewProps) {
         <PopoverContent
           align="end"
           side="top"
-          className="mly-w-max mly-rounded-lg !mly-p-0.5"
+          className="mly:w-max mly:rounded-lg mly:p-0.5!"
           sideOffset={8}
           onOpenAutoFocus={(e) => e.preventDefault()}
           onCloseAutoFocus={(e) => e.preventDefault()}
         >
           <TooltipProvider>
-            <div className="mly-flex mly-items-stretch mly-text-midnight-gray">
+            <div className="mly:flex mly:items-stretch mly:text-midnight-gray">
               <ButtonLabelInput
                 value={text}
                 onValueChange={(value, isVariable) => {
@@ -156,7 +162,7 @@ export function ButtonView(props: NodeViewProps) {
 
               <Divider />
 
-              <div className="mly-flex mly-space-x-0.5">
+              <div className="mly:flex mly:gap-x-0.5">
                 <Select
                   label="Border Radius"
                   value={_radius}
@@ -170,7 +176,7 @@ export function ButtonView(props: NodeViewProps) {
                     });
                   }}
                   tooltip="Border Radius"
-                  className="mly-capitalize"
+                  className="mly:capitalize"
                 />
 
                 <Select
@@ -186,7 +192,7 @@ export function ButtonView(props: NodeViewProps) {
                     });
                   }}
                   tooltip="Style"
-                  className="mly-capitalize"
+                  className="mly:capitalize"
                 />
 
                 <Select
@@ -209,12 +215,13 @@ export function ButtonView(props: NodeViewProps) {
                     });
                   }}
                   tooltip="Size"
+                  placeholder="Size"
                 />
               </div>
 
               <Divider />
 
-              <div className="mly-flex mly-space-x-0.5">
+              <div className="mly:flex mly:gap-x-0.5">
                 <AlignmentSwitch
                   alignment={alignment}
                   onAlignmentChange={(alignment) => {
@@ -240,10 +247,10 @@ export function ButtonView(props: NodeViewProps) {
 
               <Divider />
 
-              <div className="mly-flex mly-space-x-0.5">
+              <div className="mly:flex mly:gap-x-0.5">
                 <BackgroundColorPickerPopup
                   variant={variant}
-                  color={buttonColor}
+                  color={buttonColor || 'transparent'}
                   onChange={(color) => {
                     updateAttributes({
                       buttonColor: color,
@@ -252,7 +259,7 @@ export function ButtonView(props: NodeViewProps) {
                 />
 
                 <TextColorPickerPopup
-                  color={textColor}
+                  color={textColor || 'transparent'}
                   onChange={(color) => {
                     updateAttributes({
                       textColor: color,
@@ -287,10 +294,10 @@ function BackgroundColorPickerPopup(props: ColorPickerProps) {
         variant="ghost"
         size="sm"
         type="button"
-        className="mly-size-7"
+        className="mly:size-7"
       >
         <div
-          className="mly-h-4 mly-w-4 mly-shrink-0 mly-rounded-full mly-shadow"
+          className="mly:h-4 mly:w-4 mly:shrink-0 mly:rounded-full mly:shadow"
           style={{
             backgroundColor: variant === 'filled' ? color : 'transparent',
             borderStyle: 'solid',
@@ -312,14 +319,14 @@ function TextColorPickerPopup(props: ColorPickerProps) {
         variant="ghost"
         size="sm"
         type="button"
-        className="mly-size-7"
+        className="mly:size-7"
       >
-        <div className="mly-flex mly-flex-col mly-items-center mly-justify-center mly-gap-[1px]">
-          <span className="mly-font-bolder mly-font-mono mly-text-xs mly-text-midnight-gray">
+        <div className="mly:flex mly:flex-col mly:items-center mly:justify-center mly:gap-px">
+          <span className="mly:font-bolder mly:font-mono mly:text-xs mly:text-midnight-gray">
             A
           </span>
           <div
-            className="mly-h-[2px] mly-w-3 mly-shrink-0 mly-rounded-md mly-shadow"
+            className="mly:h-[2px] mly:w-3 mly:shrink-0 mly:rounded-md mly:shadow"
             style={{ backgroundColor: color }}
           />
         </div>
