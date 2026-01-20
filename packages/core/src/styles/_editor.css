@@ -59,6 +59,27 @@
 }
 
 #mly-editor {
+  .mly-select-padding {
+    padding-left: 10px !important;
+    padding-right: 32px !important;
+    padding-top: 2px !important;
+    padding-bottom: 2px !important;
+  }
+
+  .mly-input-padding {
+    padding-left: 8px !important;
+    padding-right: 24px !important;
+    padding-top: 2px !important;
+    padding-bottom: 2px !important;
+  }
+
+  .mly-link-input-padding {
+    padding-left: 24px !important;
+    padding-right: 24px !important;
+    padding-top: 6px !important;
+    padding-bottom: 6px !important;
+  }
+
   /* Content */
   .mly\:prose {
     strong {

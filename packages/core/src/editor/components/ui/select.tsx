@@ -53,7 +53,7 @@ export function Select(props: SelectProps) {
       <select
         id={selectId}
         className={cn(
-          'mly:flex mly:min-h-7 mly:max-w-max mly:appearance-none mly:items-center mly:rounded-md mly:bg-white mly:px-1.5 mly:py-0.5 mly:pr-7 mly:text-sm mly:text-midnight-gray mly:ring-offset-white mly:transition-colors mly:hover:bg-soft-gray mly:focus-visible:relative mly:focus-visible:z-10 mly:focus-visible:outline-hidden mly:focus-visible:ring-2 mly:focus-visible:ring-gray-400 mly:focus-visible:ring-offset-2 mly:active:bg-soft-gray',
+          'mly-select-padding mly:flex mly:min-h-7 mly:max-w-max mly:appearance-none mly:items-center mly:rounded-md mly:bg-white mly:text-sm mly:text-midnight-gray mly:ring-offset-white mly:transition-colors mly:hover:bg-soft-gray mly:focus-visible:relative mly:focus-visible:z-10 mly:focus-visible:outline-hidden mly:focus-visible:ring-2 mly:focus-visible:ring-gray-400 mly:focus-visible:ring-offset-2 mly:active:bg-soft-gray',
           !!Icon && 'mly:pl-7',
           className
         )}

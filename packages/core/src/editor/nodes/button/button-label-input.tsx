@@ -41,7 +41,7 @@ export function ButtonLabelInput(props: ButtonLabelInputProps) {
   }, [variables, value, editor]);
 
   return (
-    <div className="mly:isolate mly:flex mly:rounded-lg">
+    <div className="mly:isolate mly:flex mly:items-center mly:rounded-lg">
       {!isEditing && (
         <button
           onClick={() => {

@@ -152,7 +152,7 @@ export function LinkInputPopover(props: LinkInputPopoverProps) {
                   autoCompleteOptions={autoCompleteOptions}
                   ref={linkInputRef}
                   placeholder={placeholderUrl}
-                  className="-mly:ms-px mly:block mly:h-8 mly:w-56 mly:rounded-lg mly:border mly:border-gray-300 mly:px-2 mly:py-1.5 mly:pl-6 mly:pr-6 mly:text-sm mly:shadow-sm mly:outline-hidden mly:placeholder:text-gray-400"
+                  className="-mly:ms-px mly-link-input-padding mly:block mly:h-8 mly:w-56 mly:rounded-lg mly:border mly:border-gray-300 mly:text-sm mly:shadow-sm mly:outline-hidden mly:placeholder:text-gray-400"
                   triggerChar={variableTriggerCharacter}
                   onSelectOption={(value) => {
                     const isVariable =
