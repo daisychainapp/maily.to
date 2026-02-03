@@ -286,6 +286,13 @@ export function ImageView(props: NodeViewProps) {
     [handleImageUpload]
   );
 
+  const widthValue =
+    width && width !== 'auto' ? `${width}px` : undefined;
+  const heightValue =
+    height && height !== 'auto' ? `${height}px` : undefined;
+  const hasExplicitWidth = Boolean(widthValue || resizingStyle?.width);
+  const hasExplicitHeight = Boolean(heightValue || resizingStyle?.height);
+
   return (
     <NodeViewWrapper
       as="div"
@@ -295,15 +302,15 @@ export function ImageView(props: NodeViewProps) {
       style={{
         ...(hasImageSrc && status === 'loaded'
           ? {
-              width: width ? `${width}px` : undefined,
-              height: height ? `${height}px` : undefined,
+              width: widthValue,
+              height: heightValue,
               ...resizingStyle,
             }
           : {}),
         overflow: 'hidden',
         position: 'relative',
         // Weird! Basically tiptap/prose wraps this in a span and the line height causes an annoying buffer.
-        lineHeight: '0px',
+        lineHeight: 'normal',
         display: 'block',
         maxWidth: '100%',
         ...({
@@ -349,7 +356,7 @@ export function ImageView(props: NodeViewProps) {
           type="file"
           accept="image/*"
           onChange={handleFileChange}
-          className="mly:absolute mly:inset-0 mly:opacity-0"
+          className="mly:absolute mly:inset-0 mly:z-10 mly:h-full mly:w-full mly:cursor-pointer mly:appearance-none mly:bg-transparent mly:opacity-0 mly:text-transparent"
           multiple={false}
         />
       )}
@@ -362,19 +369,17 @@ export function ImageView(props: NodeViewProps) {
             style={{
               ...resizingStyle,
               cursor: 'default',
-              objectFit: 'fill',
+              objectFit: 'contain',
               marginBottom: 0,
               borderRadius,
               width: resizingStyle?.width
                 ? `${resizingStyle.width}px`
-                : width
-                  ? `${width}px`
-                  : 'auto',
+                : widthValue ?? '100%',
               height: resizingStyle?.height
                 ? `${resizingStyle.height}px`
-                : height
-                  ? `${height}px`
-                  : 'auto',
+                : heightValue ?? 'auto',
+              maxWidth: hasExplicitWidth ? undefined : '100%',
+              maxHeight: hasExplicitHeight ? undefined : 'none',
             }}
             draggable={editor.isEditable}
             className={cn(
@@ -420,6 +425,9 @@ type ImageStatusLabelProps = {
 
 export function ImageStatusLabel(props: ImageStatusLabelProps) {
   const { status, minHeight, className, style, isDropZone, ...rest } = props;
+  const resolvedMinHeight =
+    minHeight ?? (isDropZone ? 36 : undefined);
+  const resolvedPaddingY = isDropZone ? 8 : undefined;
 
   return (
     <div
@@ -433,9 +441,15 @@ export function ImageStatusLabel(props: ImageStatusLabelProps) {
         className
       )}
       style={{
-        ...(minHeight
+        ...(resolvedMinHeight
           ? {
-              minHeight,
+              minHeight: resolvedMinHeight,
+            }
+          : {}),
+        ...(resolvedPaddingY
+          ? {
+              paddingTop: resolvedPaddingY,
+              paddingBottom: resolvedPaddingY,
             }
           : {}),
         ...style,

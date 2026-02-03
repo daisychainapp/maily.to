@@ -1,16 +1,14 @@
-@layer theme, base, components, utilities;
-
-@import 'tailwindcss/theme.css' layer(theme) prefix(mly);
+@import 'tailwindcss/theme.css' prefix(mly);
 
 @plugin '@tailwindcss/typography';
 @plugin 'tailwind-scrollbar';
 @import 'tw-animate-css';
 
 #mly-editor {
-  @import 'tailwindcss/preflight.css' layer(base) prefix(mly);
+  @import 'tailwindcss/preflight.css' prefix(mly);
 }
 
-@import 'tailwindcss/utilities.css' layer(utilities) prefix(mly);
+@import 'tailwindcss/utilities.css' prefix(mly);
 @import './_editor.css';
 
 @theme {
@@ -26,19 +24,17 @@
   If we ever want to remove these styles, we need to add an explicit border
   color utility to any element that depends on these defaults.
 */
-@layer base {
-  *,
-  ::after,
-  ::before,
-  ::backdrop,
-  ::file-selector-button {
-    border-color: var(--color-gray-200, currentcolor);
-  }
+*,
+::after,
+::before,
+::backdrop,
+::file-selector-button {
+  border-color: var(--color-gray-200, currentcolor);
+}
 
-  button:not(:disabled),
-  [role='button']:not(:disabled) {
-    cursor: pointer;
-  }
+button:not(:disabled),
+[role='button']:not(:disabled) {
+  cursor: pointer;
 }
 
 /* Hide Number Count */

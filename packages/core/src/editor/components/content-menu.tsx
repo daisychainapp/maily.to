@@ -139,7 +139,14 @@ export function ContentMenu(props: ContentMenuProps) {
                 <Plus className="mly:size-3.5 mly:shrink-0" />
               </BaseButton>
             </TooltipTrigger>
-            <TooltipContent sideOffset={8}>Add new node</TooltipContent>
+            <TooltipContent
+              sideOffset={8}
+              className="mly:border-gray-300 mly:bg-transparent mly:p-0 mly:text-gray-700 mly:shadow-sm"
+            >
+              <span className="mly:block mly:rounded-md mly:bg-soft-gray mly:!px-2 mly:!py-1.5">
+                Add new node
+              </span>
+            </TooltipContent>
           </Tooltip>
           <Popover open={menuOpen} onOpenChange={setMenuOpen}>
             <div className="mly:relative mly:flex mly:flex-col">
@@ -159,7 +166,14 @@ export function ContentMenu(props: ContentMenuProps) {
                     <GripVertical className="mly:size-3.5 mly:shrink-0" />
                   </BaseButton>
                 </TooltipTrigger>
-                <TooltipContent sideOffset={8}>Node actions</TooltipContent>
+                <TooltipContent
+                  sideOffset={8}
+                  className="mly:border-gray-300 mly:bg-transparent mly:p-0 mly:text-gray-700 mly:shadow-sm"
+                >
+                  <span className="mly:block mly:rounded-md mly:bg-soft-gray mly:!px-2 mly:!py-1.5">
+                    Node actions
+                  </span>
+                </TooltipContent>
               </Tooltip>
               <PopoverTrigger className="mly:absolute mly:left-0 mly:top-0 mly:z-0 mly:h-5 mly:w-5" />
             </div>
@@ -168,12 +182,12 @@ export function ContentMenu(props: ContentMenuProps) {
               align="start"
               side="bottom"
               sideOffset={8}
-              className="mly:flex mly:w-max mly:flex-col mly:rounded-md mly:p-1"
+              className="mly:flex mly:w-max mly:flex-col mly:rounded-md mly:border mly:border-gray-200 mly:bg-white mly:p-1 mly:shadow-md"
             >
               <BaseButton
                 variant="ghost"
                 onClick={duplicateNode}
-                className="mly:h-auto mly:justify-start mly:gap-2 mly:rounded! mly:px-2 mly:py-1 mly:text-sm mly:font-normal"
+                className="mly:h-auto mly:justify-start mly:gap-2 mly:rounded! mly:!px-2 mly:!py-1.5 mly:text-sm mly:font-normal mly:hover:bg-soft-gray"
               >
                 <Copy className="mly:size-[15px] mly:shrink-0" />
                 Duplicate
@@ -181,7 +195,7 @@ export function ContentMenu(props: ContentMenuProps) {
               <Divider type="horizontal" />
               <BaseButton
                 onClick={deleteCurrentNode}
-                className="mly:h-auto mly:justify-start mly:gap-2 mly:rounded! mly:bg-red-100 mly:px-2 mly:py-1 mly:text-sm mly:font-normal mly:text-red-600 mly:hover:bg-red-200 mly:focus:bg-red-200"
+                className="mly:h-auto mly:justify-start mly:gap-2 mly:rounded! mly:bg-red-100 mly:!px-2 mly:!py-1.5 mly:text-sm mly:font-normal mly:text-red-600 mly:hover:bg-red-200 mly:focus:bg-red-200"
               >
                 <Trash2 className="mly:size-[15px] mly:shrink-0" />
                 Delete

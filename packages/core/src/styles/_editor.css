@@ -66,6 +66,14 @@
     padding-bottom: 2px !important;
   }
 
+  .mly-select-padding.mly\\:pl-7 {
+    padding-left: 28px !important;
+  }
+
+  .mly-select-padding[class*="mly:pl-[25px]"] {
+    padding-left: 25px !important;
+  }
+
   .mly-input-padding {
     padding-left: 8px !important;
     padding-right: 24px !important;
@@ -124,6 +132,16 @@
     :where(ol, ul):not(:where([class~='not-prose'], [class~='not-prose'] *)) {
       margin-top: 0;
       margin-bottom: 20px;
+      padding-left: 24px;
+      list-style-position: outside;
+    }
+
+    :where(ul):not(:where([class~='not-prose'], [class~='not-prose'] *)) {
+      list-style-type: disc;
+    }
+
+    :where(ol):not(:where([class~='not-prose'], [class~='not-prose'] *)) {
+      list-style-type: decimal;
     }
 
     li:not(:last-child):not(
@@ -222,6 +240,9 @@
   -webkit-font-variant-ligatures: none;
   font-variant-ligatures: none;
   font-feature-settings: 'liga' 0; /* the above doesn't seem to work in Edge */
+  min-height: 78px;
+  padding-top: 6px;
+  padding-bottom: 6px;
 
   &:focus {
     outline: none;
@@ -252,6 +273,7 @@
   a {
     color: var(--mly-link-color);
   }
+
 
   :where(.is-editor-empty:first-child, .is-empty):not(
       :where([data-type='columns'], [data-type='section'], ul, li, ol)
@@ -379,6 +401,19 @@
 
   .mly-image-drop-zone.mly-drag-over::after {
     opacity: 1;
+  }
+
+  .mly-image-drop-zone {
+    min-height: 36px;
+  }
+
+  .mly-image-drop-zone input[type='file'] {
+    opacity: 0 !important;
+    color: transparent !important;
+    font-size: 0 !important;
+    line-height: 0 !important;
+    -webkit-appearance: none !important;
+    appearance: none !important;
   }
 
   /* Remove margin before and after of Gap Cursor */

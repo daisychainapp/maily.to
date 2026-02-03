@@ -39,22 +39,22 @@ export function Select(props: SelectProps) {
   const selectId = `mly${useId()}`;
 
   const content = (
-    <div className="mly:relative">
+    <div className="mly:relative mly:inline-flex mly:h-7 mly:items-center mly:overflow-hidden">
       <label htmlFor={selectId} className="mly:sr-only">
         {label}
       </label>
 
       {Icon && (
-        <div className="mly:pointer-events-none mly:absolute mly:inset-y-0 mly:left-2 mly:z-20 mly:flex mly:items-center">
-          <Icon className={cn('mly:size-3', iconClassName)} />
+        <div className="mly:pointer-events-none mly:absolute mly:left-2 mly:top-1/2 mly:z-20 mly:flex mly:h-7 mly:-translate-y-1/2 mly:items-center">
+          <Icon className={cn('mly:size-3.5', iconClassName)} />
         </div>
       )}
 
       <select
         id={selectId}
         className={cn(
-          'mly-select-padding mly:flex mly:min-h-7 mly:max-w-max mly:appearance-none mly:items-center mly:rounded-md mly:bg-white mly:text-sm mly:text-midnight-gray mly:ring-offset-white mly:transition-colors mly:hover:bg-soft-gray mly:focus-visible:relative mly:focus-visible:z-10 mly:focus-visible:outline-hidden mly:focus-visible:ring-2 mly:focus-visible:ring-gray-400 mly:focus-visible:ring-offset-2 mly:active:bg-soft-gray',
-          !!Icon && 'mly:pl-7',
+          'mly-select-padding mly:flex mly:h-7 mly:max-w-max mly:appearance-none mly:items-center mly:rounded-md mly:bg-white mly:text-sm mly:leading-none mly:text-midnight-gray mly:ring-offset-white mly:transition-colors mly:hover:bg-soft-gray mly:focus-visible:relative mly:focus-visible:z-10 mly:focus-visible:outline-hidden mly:focus-visible:ring-2 mly:focus-visible:ring-gray-400 mly:focus-visible:ring-offset-2 mly:active:bg-soft-gray',
+          !!Icon && 'mly:pl-[25px]',
           className
         )}
         value={value || ''}
