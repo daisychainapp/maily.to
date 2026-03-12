@@ -73,6 +73,7 @@ export function Editor(props: EditorProps) {
     blocks = DEFAULT_SLASH_COMMANDS,
     editable = true,
     placeholderUrl = DEFAULT_PLACEHOLDER_URL,
+    htmlPreviewRenderer,
     scrollThreshold = 40,
     scrollMargin = 40,
   } = props;
@@ -134,7 +135,10 @@ export function Editor(props: EditorProps) {
   }
 
   return (
-    <MailyProvider placeholderUrl={placeholderUrl}>
+    <MailyProvider
+      placeholderUrl={placeholderUrl}
+      htmlPreviewRenderer={htmlPreviewRenderer}
+    >
       <div
         id="mly-editor"
         className={cn(

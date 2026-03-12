@@ -1,18 +1,22 @@
 import { cn } from '@/editor/utils/classname';
+import { useMailyContext } from '@/editor/provider';
 import { NodeViewProps } from '@tiptap/core';
 import { NodeViewContent, NodeViewWrapper } from '@tiptap/react';
-import { useMemo } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { HtmlCodeBlockAttributes } from './html';
 
 export function HTMLCodeBlockView(props: NodeViewProps) {
   const { node, updateAttributes } = props;
+  const { htmlPreviewRenderer } = useMailyContext();
+  const previewHostRef = useRef<HTMLDivElement | null>(null);
+  const previewRequestIdRef = useRef(0);
 
   let { language, activeTab = 'code' } = node.attrs as HtmlCodeBlockAttributes;
   activeTab ||= 'code';
 
   const languageClass = language ? `language-${language}` : '';
 
-  const html = useMemo(() => {
+  const html = (() => {
     const text = node.content.content.reduce((acc, cur) => {
       if (cur.type.name === 'text') {
         return acc + cur.text;
@@ -35,10 +39,79 @@ export function HTMLCodeBlockView(props: NodeViewProps) {
       .map((s) => s.innerHTML)
       .join('\n');
 
-    return `<style>${combinedStyle}</style>${body.innerHTML}`;
-  }, [activeTab]);
+    const bodyHtml = body.innerHTML;
+    return combinedStyle.trim().length > 0
+      ? `<style>${combinedStyle}</style>${bodyHtml}`
+      : bodyHtml;
+  })();
 
-  const isEmpty = html === '';
+  const [renderedHtml, setRenderedHtml] = useState(html);
+
+  useEffect(() => {
+    let mounted = true;
+
+    const renderPreview = async () => {
+      if (activeTab !== 'preview') {
+        return;
+      }
+
+      if (!htmlPreviewRenderer) {
+        setRenderedHtml(html);
+        return;
+      }
+
+      const requestId = previewRequestIdRef.current + 1;
+      previewRequestIdRef.current = requestId;
+
+      try {
+        const backendHtml = await htmlPreviewRenderer(html);
+        if (mounted && requestId === previewRequestIdRef.current) {
+          setRenderedHtml(backendHtml || '');
+        }
+      } catch {
+        if (mounted && requestId === previewRequestIdRef.current) {
+          setRenderedHtml('');
+        }
+      }
+    };
+
+    renderPreview();
+    return () => {
+      mounted = false;
+    };
+  }, [activeTab, html, htmlPreviewRenderer]);
+
+  useEffect(() => {
+    if (activeTab !== 'preview') return;
+
+    const host = previewHostRef.current;
+    if (!host) return;
+
+    const shadow = host.shadowRoot || host.attachShadow({ mode: 'open' });
+
+    if (shadow.adoptedStyleSheets.length === 0) {
+      const sheet = new CSSStyleSheet();
+      sheet.replaceSync(`
+        * { font-family: 'Inter', sans-serif; }
+        blockquote, h1, h2, h3, img, li, ol, p, ul {
+          margin-top: 0;
+          margin-bottom: 0;
+        }
+      `);
+      shadow.adoptedStyleSheets = [sheet];
+    }
+
+    const container =
+      (shadow.querySelector('[data-mly-html-preview-root]') as HTMLDivElement | null)
+      || document.createElement('div');
+    container.setAttribute('data-mly-html-preview-root', 'true');
+    container.innerHTML = renderedHtml;
+    if (!container.parentElement) {
+      shadow.appendChild(container);
+    }
+  }, [activeTab, renderedHtml]);
+
+  const isEmpty = renderedHtml === '';
 
   return (
     <NodeViewWrapper
@@ -47,7 +120,7 @@ export function HTMLCodeBlockView(props: NodeViewProps) {
       data-type="htmlCodeBlock"
     >
       {activeTab === 'code' && (
-        <pre className="mly:my-0 mly:rounded-lg mly:border mly:border-gray-200 mly:bg-white mly:p-2 mly:text-black">
+        <pre className="mly-html-code-pre">
           <NodeViewContent
             as="code"
             className={cn('is-editable', languageClass)}
@@ -58,26 +131,11 @@ export function HTMLCodeBlockView(props: NodeViewProps) {
       {activeTab === 'preview' && (
         <div
           className={cn(
-            'mly:not-prose mly:rounded-lg mly:border mly:border-gray-200 mly:p-2',
-            isEmpty && 'mly:min-h-[42px]'
+            'mly-html-preview',
+            isEmpty && 'mly-html-preview-empty'
           )}
           ref={(node) => {
-            if (!node || node?.shadowRoot) {
-              return;
-            }
-            const shadow = node.attachShadow({ mode: 'open' });
-            const sheet = new CSSStyleSheet();
-            sheet.replaceSync(`
-              * { font-family: 'Inter', sans-serif; }
-              blockquote, h1, h2, h3, img, li, ol, p, ul {
-                margin-top: 0;
-                margin-bottom: 0;
-              }
-            `);
-            shadow.adoptedStyleSheets = [sheet];
-            const container = document.createElement('div');
-            container.innerHTML = html;
-            shadow.appendChild(container);
+            previewHostRef.current = node;
           }}
           contentEditable={false}
           onClick={() => {
