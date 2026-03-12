@@ -5,6 +5,9 @@ import { NodeViewContent, NodeViewWrapper } from '@tiptap/react';
 import { useEffect, useRef, useState } from 'react';
 import { HtmlCodeBlockAttributes } from './html';
 
+const escapeLiquidDoubleQuoted = (value: string) =>
+  value.replace(/\\/g, '\\\\').replace(/"/g, '\\"').replace(/\n/g, '\\n');
+
 export function HTMLCodeBlockView(props: NodeViewProps) {
   const { node, updateAttributes } = props;
   const { htmlPreviewRenderer } = useMailyContext();
@@ -23,7 +26,7 @@ export function HTMLCodeBlockView(props: NodeViewProps) {
       } else if (cur.type.name === 'variable') {
         const { id: variable, fallback } = cur?.attrs || {};
         const formattedVariable = fallback
-          ? `{{${variable},fallback=${fallback}}}`
+          ? `{{${variable} | default: "${escapeLiquidDoubleQuoted(String(fallback))}"}}`
           : `{{${variable}}}`;
         return acc + formattedVariable;
       }
