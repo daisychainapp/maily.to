@@ -4,9 +4,7 @@ import { CodeXmlIcon, ViewIcon } from 'lucide-react';
 import { useCallback } from 'react';
 import { sticky } from 'tippy.js';
 import { getRenderContainer } from '../../utils/get-render-container';
-import { ShowPopover } from '../show-popover';
 import { EditorBubbleMenuProps } from '../text-menu/text-bubble-menu';
-import { Divider } from '../ui/divider';
 import {
   Tooltip,
   TooltipContent,
@@ -60,19 +58,27 @@ export function HTMLBubbleMenu(props: EditorBubbleMenuProps) {
       className="mly:flex mly:items-stretch mly:rounded-lg mly:border mly:border-gray-200 mly:bg-white mly:p-0.5 mly:shadow-md"
     >
       <TooltipProvider>
-        <div className="mly:flex mly:items-center mly:h-7 mly:rounded-md mly:bg-soft-gray mly:px-0.5">
+        <div className="mly-html-tab-container mly:flex mly:items-center mly:h-7 mly:overflow-hidden mly:rounded-md mly:bg-soft-gray">
           <Tooltip>
             <TooltipTrigger asChild>
               <button
                 className={cn(
-                  'mly:flex mly:size-6 mly:shrink-0 mly:items-center mly:justify-center mly:rounded mly:focus-visible:relative mly:focus-visible:z-10 mly:focus-visible:outline-hidden mly:focus-visible:ring-2 mly:focus-visible:ring-gray-400 mly:focus-visible:ring-offset-2',
+                  'mly-html-tab-button mly:flex mly:size-6 mly:shrink-0 mly:items-center mly:justify-center mly:rounded mly:focus-visible:relative mly:focus-visible:z-10 mly:focus-visible:outline-hidden mly:focus-visible:ring-2 mly:focus-visible:ring-gray-400 mly:focus-visible:ring-offset-2',
                   activeTab === 'code' && 'mly:bg-white'
                 )}
+                data-active={activeTab === 'code' ? 'true' : 'false'}
                 disabled={activeTab === 'code'}
+                onMouseDown={(event) => {
+                  event.preventDefault();
+                }}
                 onClick={() => {
-                  editor?.commands?.updateHtmlCodeBlock({
-                    activeTab: 'code',
-                  });
+                  editor
+                    .chain()
+                    .focus()
+                    .updateHtmlCodeBlock({
+                      activeTab: 'code',
+                    })
+                    .run();
                 }}
               >
                 <CodeXmlIcon className="mly:size-3 mly:shrink-0 mly:stroke-[2.5]" />
@@ -84,14 +90,22 @@ export function HTMLBubbleMenu(props: EditorBubbleMenuProps) {
             <TooltipTrigger asChild>
               <button
                 className={cn(
-                  'mly:flex mly:size-6 mly:shrink-0 mly:items-center mly:justify-center mly:rounded mly:focus-visible:relative mly:focus-visible:z-10 mly:focus-visible:outline-hidden mly:focus-visible:ring-2 mly:focus-visible:ring-gray-400 mly:focus-visible:ring-offset-2',
+                  'mly-html-tab-button mly:flex mly:size-6 mly:shrink-0 mly:items-center mly:justify-center mly:rounded mly:focus-visible:relative mly:focus-visible:z-10 mly:focus-visible:outline-hidden mly:focus-visible:ring-2 mly:focus-visible:ring-gray-400 mly:focus-visible:ring-offset-2',
                   activeTab === 'preview' && 'mly:bg-white'
                 )}
+                data-active={activeTab === 'preview' ? 'true' : 'false'}
                 disabled={activeTab === 'preview'}
+                onMouseDown={(event) => {
+                  event.preventDefault();
+                }}
                 onClick={() => {
-                  editor?.commands?.updateHtmlCodeBlock({
-                    activeTab: 'preview',
-                  });
+                  editor
+                    .chain()
+                    .focus()
+                    .updateHtmlCodeBlock({
+                      activeTab: 'preview',
+                    })
+                    .run();
                 }}
               >
                 <ViewIcon className="mly:size-3 mly:shrink-0 mly:stroke-[2.5]" />
@@ -100,16 +114,6 @@ export function HTMLBubbleMenu(props: EditorBubbleMenuProps) {
             <TooltipContent sideOffset={8}>Preview</TooltipContent>
           </Tooltip>
         </div>
-        <Divider />
-        <ShowPopover
-          showIfKey={state.currentShowIfKey}
-          onShowIfKeyValueChange={(value) => {
-            editor.commands.updateHtmlCodeBlock({
-              showIfKey: value,
-            });
-          }}
-          editor={editor}
-        />
       </TooltipProvider>
     </BubbleMenu>
   );

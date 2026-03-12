@@ -59,6 +59,38 @@
 }
 
 #mly-editor {
+  .mly-html-code-pre {
+    margin-top: 24px !important;
+    margin-bottom: 24px !important;
+    border: 1px solid #e5e7eb !important;
+    border-radius: 8px !important;
+    background-color: #fff !important;
+    padding: 8px !important;
+    color: #000 !important;
+    font-size: 14px !important;
+  }
+
+  .mly-html-preview {
+    border: 1px solid #e5e7eb !important;
+    border-radius: 8px !important;
+    padding: 8px !important;
+  }
+
+  .mly-html-preview-empty {
+    min-height: 42px !important;
+  }
+
+  .mly-html-tab-container {
+    padding-left: 4px !important;
+    padding-right: 4px !important;
+  }
+
+  .mly-html-tab-button[data-active='true'] {
+    background-color: #fff !important;
+    opacity: 1 !important;
+    color: inherit !important;
+  }
+
   .mly-select-padding {
     padding-left: 10px !important;
     padding-right: 32px !important;
