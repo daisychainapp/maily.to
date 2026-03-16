@@ -9,7 +9,6 @@ export const DEFAULT_PLACEHOLDER_URL = 'https://maily.to/';
 export type MailyContextType = {
   placeholderUrl?: string;
   blocks?: BlockGroupItem[];
-  htmlPreviewRenderer?: (html: string) => Promise<string>;
 };
 
 export const MailyContext = createContext<MailyContextType>({
