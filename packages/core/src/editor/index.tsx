@@ -11,7 +11,6 @@ import { useMemo, useRef } from 'react';
 import { ColumnsBubbleMenu } from './components/column-menu/columns-bubble-menu';
 import { ContentMenu } from './components/content-menu';
 import { EditorMenuBar } from './components/editor-menu-bar';
-import { HTMLBubbleMenu } from './components/html-menu/html-menu';
 import { ImageBubbleMenu } from './components/image-menu/image-bubble-menu';
 import { InlineImageBubbleMenu } from './components/inline-image-menu/inline-image-bubble-menu';
 import { RepeatBubbleMenu } from './components/repeat-menu/repeat-bubble-menu';
@@ -73,7 +72,6 @@ export function Editor(props: EditorProps) {
     blocks = DEFAULT_SLASH_COMMANDS,
     editable = true,
     placeholderUrl = DEFAULT_PLACEHOLDER_URL,
-    htmlPreviewRenderer,
     scrollThreshold = 40,
     scrollMargin = 40,
   } = props;
@@ -135,10 +133,7 @@ export function Editor(props: EditorProps) {
   }
 
   return (
-    <MailyProvider
-      placeholderUrl={placeholderUrl}
-      htmlPreviewRenderer={htmlPreviewRenderer}
-    >
+    <MailyProvider placeholderUrl={placeholderUrl}>
       <div
         id="mly-editor"
         className={cn(
@@ -164,7 +159,6 @@ export function Editor(props: EditorProps) {
           {!hideContextMenu && <ContentMenu editor={editor} />}
           <VariableBubbleMenu editor={editor} appendTo={menuContainerRef} />
           <RepeatBubbleMenu editor={editor} appendTo={menuContainerRef} />
-          <HTMLBubbleMenu editor={editor} appendTo={menuContainerRef} />
           <InlineImageBubbleMenu editor={editor} appendTo={menuContainerRef} />
         </div>
       </div>
