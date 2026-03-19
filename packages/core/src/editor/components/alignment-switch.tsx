@@ -56,7 +56,14 @@ export function AlignmentSwitch(props: AlignmentSwitchProps) {
             <activeAlignment.icon className="mly:h-3 mly:w-3 mly:stroke-[2.5]" />
           </PopoverTrigger>
         </TooltipTrigger>
-        <TooltipContent sideOffset={8}>Alignment</TooltipContent>
+        <TooltipContent
+          sideOffset={8}
+          className="mly:border-gray-300 mly:bg-transparent mly:p-0 mly:text-gray-700 mly:shadow-sm"
+        >
+          <span className="mly:block mly:rounded-md mly:bg-soft-gray mly:!px-2 mly:!py-1.5">
+            Alignment
+          </span>
+        </TooltipContent>
       </Tooltip>
       <PopoverContent
         className="mly:flex mly:w-max mly:gap-0.5 mly:rounded-lg mly:p-0.5!"

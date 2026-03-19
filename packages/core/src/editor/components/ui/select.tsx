@@ -91,7 +91,14 @@ export function Select(props: SelectProps) {
   return (
     <Tooltip>
       <TooltipTrigger asChild>{content}</TooltipTrigger>
-      <TooltipContent sideOffset={8}>{tooltip}</TooltipContent>
+      <TooltipContent
+        sideOffset={8}
+        className="mly:border-gray-300 mly:bg-transparent mly:p-0 mly:text-gray-700 mly:shadow-sm"
+      >
+        <span className="mly:block mly:rounded-md mly:bg-soft-gray mly:!px-2 mly:!py-1.5">
+          {tooltip}
+        </span>
+      </TooltipContent>
     </Tooltip>
   );
 }
