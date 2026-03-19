@@ -46,11 +46,9 @@ export function TurnIntoBlock(props: TurnIntoBlockProps) {
         </TooltipTrigger>
         <TooltipContent
           sideOffset={8}
-          className="mly:border-gray-300 mly:bg-transparent mly:p-0 mly:text-gray-700 mly:shadow-sm"
+          className="tooltip-surface"
         >
-          <span className="mly:block mly:rounded-md mly:bg-soft-gray mly:!px-2 mly:!py-1.5">
-            Turn into
-          </span>
+          Turn into
         </TooltipContent>
       </Tooltip>
       <PopoverContent

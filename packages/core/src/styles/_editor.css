@@ -58,6 +58,16 @@
   --mly-link-color: #111827;
 }
 
+/* Shared tooltip surface style used across editor controls. */
+.tooltip-surface {
+  border: 1px solid #d1d5db !important;
+  background-color: #ffffff !important;
+  color: #374151 !important;
+  box-shadow: none !important;
+  padding: 2px 6px !important;
+  border-radius: 4px !important;
+}
+
 #mly-editor {
   .mly-html-code-pre {
     margin-top: 24px !important;

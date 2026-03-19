@@ -107,7 +107,7 @@ export function RepeatBubbleMenu(props: EditorBubbleMenuProps) {
             </TooltipTrigger>
             <TooltipContent
               sideOffset={14}
-              className="mly:max-w-[260px]"
+              className="tooltip-surface mly:max-w-[260px]"
               align="start"
             >
               Ensure the selected variable is iterable, such as an array of

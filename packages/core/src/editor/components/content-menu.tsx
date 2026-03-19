@@ -141,11 +141,9 @@ export function ContentMenu(props: ContentMenuProps) {
             </TooltipTrigger>
             <TooltipContent
               sideOffset={8}
-              className="mly:border-gray-300 mly:bg-transparent mly:p-0 mly:text-gray-700 mly:shadow-sm"
+              className="tooltip-surface"
             >
-              <span className="mly:block mly:rounded-md mly:bg-soft-gray mly:!px-2 mly:!py-1.5">
-                Add new node
-              </span>
+              Add new node
             </TooltipContent>
           </Tooltip>
           <Popover open={menuOpen} onOpenChange={setMenuOpen}>
@@ -168,11 +166,9 @@ export function ContentMenu(props: ContentMenuProps) {
                 </TooltipTrigger>
                 <TooltipContent
                   sideOffset={8}
-                  className="mly:border-gray-300 mly:bg-transparent mly:p-0 mly:text-gray-700 mly:shadow-sm"
+                  className="tooltip-surface"
                 >
-                  <span className="mly:block mly:rounded-md mly:bg-soft-gray mly:!px-2 mly:!py-1.5">
-                    Node actions
-                  </span>
+                  Node actions
                 </TooltipContent>
               </Tooltip>
               <PopoverTrigger className="mly:absolute mly:left-0 mly:top-0 mly:z-0 mly:h-5 mly:w-5" />
