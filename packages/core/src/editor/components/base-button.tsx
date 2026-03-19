@@ -36,7 +36,7 @@ const BaseButton = React.forwardRef<HTMLButtonElement, ButtonProps>(
         'mly:border mly:border-gray-200 mly:bg-white mly:hover:bg-gray-100 mly:hover:text-gray-900',
       secondary: 'mly:bg-gray-100 mly:text-gray-900 mly:hover:bg-gray-100/80',
       ghost:
-        'mly:hover:bg-soft-gray bg-transparent mly:hover:text-gray-900 mly:data-[state=true]:bg-soft-gray mly:data-[state=true]:text-gray-900',
+        'mly:hover:bg-soft-gray mly:bg-transparent mly:hover:text-gray-900 mly:data-[state=true]:bg-soft-gray mly:data-[state=true]:text-gray-900',
       link: 'mly:text-gray-900 mly:underline-offset-4 mly:hover:underline',
     };
     const sizeClasses = {

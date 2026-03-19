@@ -68,6 +68,12 @@
   border-radius: 4px !important;
 }
 
+/* Fallback active state for bubble-menu options independent of mly variants. */
+.menu-active-option {
+  background-color: #f4f5f6 !important;
+  color: #111827 !important;
+}
+
 #mly-editor {
   .mly-html-code-pre {
     margin-top: 24px !important;

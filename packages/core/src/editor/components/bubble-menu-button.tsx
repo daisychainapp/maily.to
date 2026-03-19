@@ -5,14 +5,16 @@ import { Tooltip, TooltipContent, TooltipTrigger } from './ui/tooltip';
 
 export function BubbleMenuButton(item: BubbleMenuItem) {
   const { tooltip } = item;
+  const isActive = item?.isActive?.() ?? false
 
   const content = (
     <BaseButton
       variant="ghost"
       size="sm"
       {...(item.command ? { onClick: item.command } : {})}
-      data-state={item?.isActive?.()}
+      data-state={isActive}
       className={cn(
+        isActive && 'menu-active-option',
         'mly:size-7! mly:px-2.5 mly:disabled:cursor-not-allowed',
         item?.className
       )}
