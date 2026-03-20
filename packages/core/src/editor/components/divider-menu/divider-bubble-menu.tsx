@@ -1,54 +1,50 @@
-import { BubbleMenu } from '@tiptap/react';
+import { BubbleMenu } from '@tiptap/react'
+import { useMemo } from 'react'
 
-import { BubbleMenuButton } from '../bubble-menu-button';
+import { spacing } from '@/editor/utils/spacing'
+import { BubbleMenuButton } from '../bubble-menu-button'
 import {
   BubbleMenuItem,
   EditorBubbleMenuProps,
-} from '../text-menu/text-bubble-menu';
-import { Divider } from '../ui/divider';
-import { useSpacerState } from './use-spacer-state';
-import { TooltipProvider } from '../ui/tooltip';
-import { spacing } from '@/editor/utils/spacing';
-import { useMemo } from 'react';
+} from '../text-menu/text-bubble-menu'
+import { TooltipProvider } from '../ui/tooltip'
 
-export function SpacerBubbleMenu(props: EditorBubbleMenuProps) {
-  const { editor, appendTo } = props;
+export function DividerBubbleMenu(props: EditorBubbleMenuProps) {
+  const { editor, appendTo } = props
   if (!editor) {
-    return null;
+    return null
   }
 
   const items: BubbleMenuItem[] = useMemo(
     () =>
       spacing.map((space) => {
-        const { value: height, short: name } = space;
+        const { value: size, short: name } = space
         return {
           name,
-          isActive: () => editor?.isActive('spacer', { height }),
+          isActive: () => editor.isActive('horizontalRule', { size }),
           command: () => {
-            editor?.chain().focus().setSpacer({ height }).run();
+            editor.chain().focus().updateAttributes('horizontalRule', { size }).run()
           },
-        };
+        }
       }),
     [editor]
-  );
+  )
 
   const bubbleMenuProps: EditorBubbleMenuProps = {
     ...props,
     ...(appendTo ? { appendTo: appendTo.current } : {}),
     shouldShow: ({ editor }) => {
       if (!editor.isEditable) {
-        return false;
+        return false
       }
 
-      return editor.isActive('spacer');
+      return editor.isActive('horizontalRule')
     },
     tippyOptions: {
       maxWidth: '100%',
       moveTransition: 'mly:transform 0.15s mly:ease-out',
     },
-  };
-
-  const state = useSpacerState(editor);
+  }
 
   return (
     <BubbleMenu
@@ -67,5 +63,5 @@ export function SpacerBubbleMenu(props: EditorBubbleMenuProps) {
         ))}
       </TooltipProvider>
     </BubbleMenu>
-  );
+  )
 }

@@ -8,8 +8,8 @@ import { AllowedLogoAlignment } from '../logo/logo';
 export const DEFAULT_BUTTON_ALIGNMENT: AllowedLogoAlignment = 'left';
 export const DEFAULT_BUTTON_VARIANT: AllowedButtonVariant = 'filled';
 export const DEFAULT_BUTTON_BORDER_RADIUS: AllowedButtonBorderRadius = 'smooth';
-export const DEFAULT_BUTTON_BACKGROUND_COLOR = null;
-export const DEFAULT_BUTTON_TEXT_COLOR = null;
+export const DEFAULT_BUTTON_BACKGROUND_COLOR = '#000000';
+export const DEFAULT_BUTTON_TEXT_COLOR = '#ffffff';
 
 export const DEFAULT_BUTTON_PADDING_TOP = null;
 export const DEFAULT_BUTTON_PADDING_RIGHT = null;
@@ -23,6 +23,9 @@ export const allowedButtonBorderRadius = ['sharp', 'smooth', 'round'] as const;
 export type AllowedButtonBorderRadius =
   (typeof allowedButtonBorderRadius)[number];
 
+export const allowedButtonSize = ['small', 'medium', 'large'] as const;
+export type AllowedButtonSize = (typeof allowedButtonSize)[number];
+
 export type ButtonAttributes = {
   text: string;
   isTextVariable: boolean;
@@ -33,6 +36,7 @@ export type ButtonAttributes = {
   alignment: AllowedLogoAlignment;
   variant: AllowedButtonVariant;
   borderRadius: AllowedButtonBorderRadius;
+  size: AllowedButtonSize;
   buttonColor: string;
   textColor: string;
 
@@ -156,6 +160,20 @@ export const ButtonExtension = Node.create({
           };
         },
       },
+      size: {
+        default: 'medium',
+        parseHTML: (element) => {
+          const value = element.getAttribute('data-size');
+          return (allowedButtonSize.includes(value as AllowedButtonSize)
+            ? value
+            : 'medium') as AllowedButtonSize;
+        },
+        renderHTML: (attributes) => {
+          return {
+            'data-size': attributes.size,
+          };
+        },
+      },
       showIfKey: {
         default: DEFAULT_SECTION_SHOW_IF_KEY,
         parseHTML: (element) => {
@@ -209,7 +227,10 @@ export const ButtonExtension = Node.create({
         ({ commands }) => {
           return commands.insertContent({
             type: this.name,
-            attrs: {},
+            attrs: {
+              buttonColor: DEFAULT_BUTTON_BACKGROUND_COLOR,
+              textColor: DEFAULT_BUTTON_TEXT_COLOR,
+            },
             content: [],
           });
         },

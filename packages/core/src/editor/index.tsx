@@ -10,6 +10,7 @@ import { EditorContent, JSONContent, useEditor } from '@tiptap/react';
 import { useMemo, useRef } from 'react';
 import { ColumnsBubbleMenu } from './components/column-menu/columns-bubble-menu';
 import { ContentMenu } from './components/content-menu';
+import { DividerBubbleMenu } from './components/divider-menu/divider-bubble-menu';
 import { EditorMenuBar } from './components/editor-menu-bar';
 import { ImageBubbleMenu } from './components/image-menu/image-bubble-menu';
 import { InlineImageBubbleMenu } from './components/inline-image-menu/inline-image-bubble-menu';
@@ -153,6 +154,7 @@ export function Editor(props: EditorProps) {
           <TextBubbleMenu editor={editor} appendTo={menuContainerRef} />
           <ImageBubbleMenu editor={editor} appendTo={menuContainerRef} />
           <SpacerBubbleMenu editor={editor} appendTo={menuContainerRef} />
+          <DividerBubbleMenu editor={editor} appendTo={menuContainerRef} />
           <EditorContent editor={editor} />
           <SectionBubbleMenu editor={editor} appendTo={menuContainerRef} />
           <ColumnsBubbleMenu editor={editor} appendTo={menuContainerRef} />

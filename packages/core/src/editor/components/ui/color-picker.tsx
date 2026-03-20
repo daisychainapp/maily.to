@@ -54,7 +54,7 @@ export function ColorPicker(props: ColorPickerProps) {
       {children || (
         <BaseButton
           variant="ghost"
-          className="mly:h-7 mly:w-7 mly:shrink-0"
+          className="menu-option mly:h-7 mly:w-7 mly:shrink-0"
           size="sm"
           type="button"
         >
@@ -96,10 +96,10 @@ export function ColorPicker(props: ColorPickerProps) {
       )}
 
       <PopoverContent
-        className="mly:w-full mly:rounded-none mly:border-0 mly:bg-transparent! mly:p-0! mly:shadow-none mly:drop-shadow-md"
+        className="menu-color-popover mly:w-full mly:rounded-none mly:border-0 mly:bg-transparent! mly:p-0! mly:shadow-none mly:drop-shadow-md"
         sideOffset={8}
       >
-        <div className="mly:min-w-[260px] mly:rounded-xl mly:border mly:border-gray-200 mly:bg-white mly:p-4">
+        <div className="menu-color-panel mly:min-w-[260px] mly:rounded-xl mly:border mly:border-gray-200 mly:bg-white mly:p-4">
           <HexColorPicker
             color={color}
             onChange={handleColorChange}
@@ -109,7 +109,7 @@ export function ColorPicker(props: ColorPickerProps) {
             alpha={true}
             color={color}
             onChange={handleColorChange}
-            className="mly:mt-4 mly:w-full mly:min-w-0 mly:rounded-lg mly:border mly:border-gray-200 mly:bg-white mly:px-2 mly:py-1.5 mly:text-sm mly:uppercase mly:focus-visible:border-gray-400 mly:focus-visible:outline-hidden"
+            className="menu-color-hex-input mly:mt-4 mly:w-full mly:min-w-0 mly:rounded-lg mly:border mly:border-gray-200 mly:bg-white mly:px-2 mly:py-1.5 mly:text-sm mly:uppercase mly:focus-visible:border-gray-400 mly:focus-visible:outline-hidden"
             prefixed
           />
 

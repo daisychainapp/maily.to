@@ -14,6 +14,7 @@ export function BubbleMenuButton(item: BubbleMenuItem) {
       {...(item.command ? { onClick: item.command } : {})}
       data-state={isActive}
       className={cn(
+        'menu-option',
         isActive && 'menu-active-option',
         'mly:size-7! mly:px-2.5 mly:disabled:cursor-not-allowed',
         item?.className

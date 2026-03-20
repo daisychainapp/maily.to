@@ -2,6 +2,17 @@ import { InputRule } from '@tiptap/core';
 import { HorizontalRule as TipTapHorizontalRule } from '@tiptap/extension-horizontal-rule';
 
 export const HorizontalRule = TipTapHorizontalRule.extend({
+  addAttributes() {
+    return {
+      size: {
+        default: 32,
+        parseHTML: (element) => Number(element.getAttribute('data-size') || 32),
+        renderHTML: (attributes) => ({
+          'data-size': attributes.size,
+        }),
+      },
+    };
+  },
   addInputRules() {
     return [
       new InputRule({
@@ -24,7 +35,7 @@ export const HorizontalRule = TipTapHorizontalRule.extend({
   addOptions() {
     return {
       HTMLAttributes: {
-        class: 'mly:relative',
+        class: 'mly:relative mly-divider-node',
       },
     };
   },

@@ -66,5 +66,20 @@ export const divider: BlockItem = {
   command: ({ editor, range }) => {
     // @ts-ignore
     editor.chain().focus().deleteRange(range).setHorizontalRule().run();
+
+    const { from } = editor.state.selection
+    const nearbyPositions = [from, from - 1, from - 2, from + 1]
+    const dividerPos = nearbyPositions.find((pos) => {
+      if (pos < 0) {
+        return false
+      }
+
+      return editor.state.doc.nodeAt(pos)?.type.name === 'horizontalRule'
+    })
+
+    if (dividerPos != null) {
+      // @ts-ignore
+      editor.chain().focus().setNodeSelection(dividerPos).run()
+    }
   },
 };

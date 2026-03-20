@@ -1,5 +1,5 @@
-import { AlignmentSwitch } from '@/editor/components/alignment-switch';
 import { BaseButton } from '@/editor/components/base-button';
+import { BubbleMenuButton } from '@/editor/components/bubble-menu-button';
 import {
   Popover,
   PopoverContent,
@@ -13,12 +13,17 @@ import { TooltipProvider } from '@/editor/components/ui/tooltip';
 import { cn } from '@/editor/utils/classname';
 import { useVariableOptions } from '@/editor/utils/node-options';
 import { NodeViewProps, NodeViewWrapper } from '@tiptap/react';
+import { AlignCenter, AlignLeft, AlignRight } from 'lucide-react';
 import { CSSProperties, useMemo } from 'react';
 import {
   allowedButtonBorderRadius,
+  allowedButtonSize,
+  AllowedButtonSize,
   AllowedButtonVariant,
   allowedButtonVariant,
   ButtonAttributes,
+  DEFAULT_BUTTON_BACKGROUND_COLOR,
+  DEFAULT_BUTTON_TEXT_COLOR,
 } from './button';
 import { ButtonLabelInput } from './button-label-input';
 
@@ -30,6 +35,7 @@ export function ButtonView(props: NodeViewProps) {
     alignment,
     variant,
     borderRadius: _radius,
+    size: rawSize,
     buttonColor,
     textColor,
     url: externalLink,
@@ -62,11 +68,17 @@ export function ButtonView(props: NodeViewProps) {
   );
 
   const size = useMemo(() => {
-    return Object.entries(sizes).find(
-      ([, { paddingX, paddingY }]) =>
-        paddingRight === paddingX && paddingTop === paddingY
-    )?.[0] as 'small' | 'medium' | 'large';
-  }, [paddingRight, paddingTop, sizes]);
+    if (allowedButtonSize.includes(rawSize as AllowedButtonSize)) {
+      return rawSize as AllowedButtonSize;
+    }
+
+    return (
+      Object.entries(sizes).find(
+        ([, { paddingX, paddingY }]) =>
+          paddingRight === paddingX && paddingTop === paddingY
+      )?.[0] || 'medium'
+    ) as AllowedButtonSize;
+  }, [rawSize, paddingRight, paddingTop, sizes]);
 
   return (
     <NodeViewWrapper
@@ -141,13 +153,13 @@ export function ButtonView(props: NodeViewProps) {
         <PopoverContent
           align="end"
           side="top"
-          className="mly:w-max mly:rounded-lg mly:p-0.5!"
+          className="menu-dropdown-surface button-menu-surface mly:w-max mly:rounded-lg mly:p-0.5!"
           sideOffset={8}
           onOpenAutoFocus={(e) => e.preventDefault()}
           onCloseAutoFocus={(e) => e.preventDefault()}
         >
           <TooltipProvider>
-            <div className="mly:flex mly:items-stretch mly:text-midnight-gray">
+            <div className="menu-surface menu-inline-gap mly:flex mly:items-stretch mly:text-midnight-gray">
               <ButtonLabelInput
                 value={text}
                 onValueChange={(value, isVariable) => {
@@ -162,7 +174,7 @@ export function ButtonView(props: NodeViewProps) {
 
               <Divider />
 
-              <div className="mly:flex mly:gap-x-0.5">
+              <div className="menu-inline-gap mly:flex mly:gap-x-0.5">
                 <Select
                   label="Border Radius"
                   value={_radius}
@@ -208,6 +220,7 @@ export function ButtonView(props: NodeViewProps) {
                       sizes[value as 'small' | 'medium' | 'large'];
 
                     updateAttributes({
+                      size: value,
                       paddingTop: paddingY,
                       paddingRight: paddingX,
                       paddingBottom: paddingY,
@@ -221,14 +234,36 @@ export function ButtonView(props: NodeViewProps) {
 
               <Divider />
 
-              <div className="mly:flex mly:gap-x-0.5">
-                <AlignmentSwitch
-                  alignment={alignment}
-                  onAlignmentChange={(alignment) => {
+              <div className="menu-inline-gap mly:flex mly:gap-x-0.5">
+                <BubbleMenuButton
+                  icon={AlignLeft}
+                  tooltip="Align Left"
+                  command={() => {
                     updateAttributes({
-                      alignment,
+                      alignment: 'left',
                     });
                   }}
+                  isActive={() => alignment === 'left'}
+                />
+                <BubbleMenuButton
+                  icon={AlignCenter}
+                  tooltip="Align Center"
+                  command={() => {
+                    updateAttributes({
+                      alignment: 'center',
+                    });
+                  }}
+                  isActive={() => alignment === 'center'}
+                />
+                <BubbleMenuButton
+                  icon={AlignRight}
+                  tooltip="Align Right"
+                  command={() => {
+                    updateAttributes({
+                      alignment: 'right',
+                    });
+                  }}
+                  isActive={() => alignment === 'right'}
                 />
 
                 <LinkInputPopover
@@ -247,10 +282,10 @@ export function ButtonView(props: NodeViewProps) {
 
               <Divider />
 
-              <div className="mly:flex mly:gap-x-0.5">
+              <div className="menu-inline-gap mly:flex mly:gap-x-0.5">
                 <BackgroundColorPickerPopup
                   variant={variant}
-                  color={buttonColor || 'transparent'}
+                  color={buttonColor || DEFAULT_BUTTON_BACKGROUND_COLOR}
                   onChange={(color) => {
                     updateAttributes({
                       buttonColor: color,
@@ -259,7 +294,7 @@ export function ButtonView(props: NodeViewProps) {
                 />
 
                 <TextColorPickerPopup
-                  color={textColor || 'transparent'}
+                  color={textColor || DEFAULT_BUTTON_TEXT_COLOR}
                   onChange={(color) => {
                     updateAttributes({
                       textColor: color,
@@ -294,7 +329,7 @@ function BackgroundColorPickerPopup(props: ColorPickerProps) {
         variant="ghost"
         size="sm"
         type="button"
-        className="mly:size-7"
+        className="menu-option mly:size-7"
       >
         <div
           className="mly:h-4 mly:w-4 mly:shrink-0 mly:rounded-full mly:shadow"
@@ -319,7 +354,7 @@ function TextColorPickerPopup(props: ColorPickerProps) {
         variant="ghost"
         size="sm"
         type="button"
-        className="mly:size-7"
+        className="menu-option mly:size-7"
       >
         <div className="mly:flex mly:flex-col mly:items-center mly:justify-center mly:gap-px">
           <span className="mly:font-bolder mly:font-mono mly:text-xs mly:text-midnight-gray">

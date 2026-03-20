@@ -126,13 +126,13 @@ export function ContentMenu(props: ContentMenuProps) {
       className={cn(editor.isEditable ? 'mly:visible' : 'mly:hidden')}
     >
       <TooltipProvider>
-        <div className="mly:flex mly:items-center mly:pr-1.5">
+        <div className="menu-content-actions-offset mly:flex mly:items-center mly:pr-1.5">
           <Tooltip>
             <TooltipTrigger asChild>
               <BaseButton
                 variant="ghost"
                 size="icon"
-                className="mly:size-5! mly:cursor-grab mly:text-gray-500 mly:hover:text-black"
+                className="menu-icon-button mly:size-5! mly:cursor-grab mly:text-gray-500 mly:hover:text-black"
                 onClick={handleAddNewNode}
                 type="button"
               >
@@ -153,7 +153,7 @@ export function ContentMenu(props: ContentMenuProps) {
                   <BaseButton
                     variant="ghost"
                     size="icon"
-                    className="mly:relative mly:z-1 mly:size-5! mly:cursor-grab mly:text-gray-500 mly:hover:text-black"
+                    className="menu-icon-button mly:relative mly:z-1 mly:size-5! mly:cursor-grab mly:text-gray-500 mly:hover:text-black"
                     onClick={(e) => {
                       e.preventDefault();
                       setMenuOpen(true);
@@ -178,20 +178,20 @@ export function ContentMenu(props: ContentMenuProps) {
               align="start"
               side="bottom"
               sideOffset={8}
-              className="mly:flex mly:w-max mly:flex-col mly:rounded-md mly:border mly:border-gray-200 mly:bg-white mly:p-1 mly:shadow-md"
+              className="menu-actions-surface mly:flex mly:w-max mly:flex-col mly:rounded-md mly:border mly:border-gray-200 mly:bg-white mly:p-1 mly:shadow-md"
             >
               <BaseButton
                 variant="ghost"
                 onClick={duplicateNode}
-                className="mly:h-auto mly:justify-start mly:gap-2 mly:rounded! mly:!px-2 mly:!py-1.5 mly:text-sm mly:font-normal mly:hover:bg-soft-gray"
+                className="menu-action-item mly:h-auto mly:justify-start mly:gap-2 mly:rounded! mly:!px-2 mly:!py-1.5 mly:text-sm mly:font-normal mly:hover:bg-soft-gray"
               >
                 <Copy className="mly:size-[15px] mly:shrink-0" />
                 Duplicate
               </BaseButton>
-              <Divider type="horizontal" />
+              <Divider type="horizontal" className="menu-actions-divider" />
               <BaseButton
                 onClick={deleteCurrentNode}
-                className="mly:h-auto mly:justify-start mly:gap-2 mly:rounded! mly:bg-red-100 mly:!px-2 mly:!py-1.5 mly:text-sm mly:font-normal mly:text-red-600 mly:hover:bg-red-200 mly:focus:bg-red-200"
+                className="menu-action-item menu-action-item-danger mly:h-auto mly:justify-start mly:gap-2 mly:rounded! mly:bg-red-100 mly:!px-2 mly:!py-1.5 mly:text-sm mly:font-normal mly:text-red-600 mly:hover:bg-red-200 mly:focus:bg-red-200"
               >
                 <Trash2 className="mly:size-[15px] mly:shrink-0" />
                 Delete

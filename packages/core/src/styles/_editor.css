@@ -69,9 +69,147 @@
 }
 
 /* Fallback active state for bubble-menu options independent of mly variants. */
-.menu-active-option {
+.menu-surface {
+  padding: 2px !important;
+}
+
+.menu-inline-gap {
+  column-gap: 2px !important;
+  row-gap: 2px !important;
+}
+
+.button-menu-surface {
+  padding: 2px !important;
+}
+
+.image-menu-surface {
+  padding: 2px !important;
+}
+
+.menu-select-wrap {
+  height: 28px !important;
+}
+
+.menu-select-control {
+  height: 28px !important;
+  font-size: 14px !important;
+  box-sizing: border-box !important;
+  line-height: 20px !important;
+  padding-top: 3px !important;
+  padding-bottom: 3px !important;
+}
+
+.image-size-control {
+  height: 28px !important;
+  border-radius: 6px !important;
+}
+
+.image-size-input {
+  height: 28px !important;
+  padding-top: 0 !important;
+  padding-bottom: 0 !important;
+}
+
+.menu-option:hover,
+.menu-option:focus-visible {
   background-color: #f4f5f6 !important;
   color: #111827 !important;
+  border-radius: 6px !important;
+}
+
+.menu-active-option,
+.menu-active-option:hover,
+.menu-active-option:focus-visible {
+  background-color: #f4f5f6 !important;
+  color: #111827 !important;
+  border-radius: 6px !important;
+}
+
+.menu-action-item:hover,
+.menu-action-item:focus-visible {
+  background-color: #f4f5f6 !important;
+}
+
+.menu-action-item {
+  padding-top: 4px !important;
+  padding-bottom: 4px !important;
+}
+
+.menu-action-item-danger:hover,
+.menu-action-item-danger:focus-visible {
+  background-color: #fecaca !important;
+}
+
+.menu-icon-button:hover,
+.menu-icon-button:focus-visible {
+  background-color: #f4f5f6 !important;
+  color: #111827 !important;
+  border-radius: 6px !important;
+}
+
+.menu-actions-surface {
+  padding: 2px !important;
+}
+
+.menu-content-actions-offset {
+  transform: translateX(-6px) !important;
+}
+
+.menu-dropdown-surface {
+  padding: 2px !important;
+  border: 1px solid #e5e7eb !important;
+  border-radius: 8px !important;
+  background-color: #ffffff !important;
+}
+
+.menu-dropdown-option {
+  padding-top: 4px !important;
+  padding-bottom: 4px !important;
+  margin-block: 1px !important;
+}
+
+.menu-dropdown-category {
+  padding-top: 2px !important;
+  padding-bottom: 2px !important;
+}
+
+.menu-actions-divider {
+  margin-block: 2px !important;
+  height: 1px !important;
+  flex-shrink: 0 !important;
+  background-color: #e5e7eb !important;
+}
+
+.menu-color-popover {
+  padding: 0 !important;
+  border: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+}
+
+.menu-color-panel {
+  min-width: 260px !important;
+  border: 1px solid #e5e7eb !important;
+  border-radius: 12px !important;
+  background-color: #ffffff !important;
+  padding: 12px !important;
+}
+
+.menu-color-hex-input {
+  margin-top: 10px !important;
+  width: 100% !important;
+  min-width: 0 !important;
+  border: 1px solid #e5e7eb !important;
+  border-radius: 8px !important;
+  background-color: #ffffff !important;
+  padding: 6px 8px !important;
+  font-size: 14px !important;
+  box-shadow: none !important;
+}
+
+.menu-color-hex-input:focus-visible {
+  outline: none !important;
+  border-color: #9ca3af !important;
 }
 
 #mly-editor {
@@ -151,6 +289,19 @@
       margin-bottom: 20px;
     }
 
+    blockquote:not(:where([class~='not-prose'], [class~='not-prose'] *)) {
+      border-left: 4px solid #d1d5db !important;
+      padding-left: 16px !important;
+      margin-top: 16px !important;
+      margin-right: 0 !important;
+      margin-bottom: 16px !important;
+      margin-left: 0 !important;
+    }
+
+    blockquote > p:not(:where([class~='not-prose'], [class~='not-prose'] *)) {
+      margin-bottom: 0 !important;
+    }
+
     :where(h1, h2, h3, hr, table)
       + p:not(:where([class~='not-prose'], [class~='not-prose'] *)) {
       margin-top: 0;
@@ -188,8 +339,60 @@
       margin-bottom: 32px;
     }
 
-    hr:not(:where([class~='not-prose'], [class~='not-prose'] *)) {
-      margin-block: 32px;
+    .mly-divider-node:not(
+        :where([class~='not-prose'], [class~='not-prose'] *)
+      ) {
+      position: relative;
+      display: block;
+      width: 100%;
+      height: 32px !important;
+      margin: 0 !important;
+      padding: 0 !important;
+      border: 0 !important;
+      background: transparent !important;
+    }
+
+    .mly-divider-node:not(
+        :where([class~='not-prose'], [class~='not-prose'] *)
+      )::after {
+      content: '';
+      position: absolute;
+      left: 0;
+      right: 0;
+      top: 50%;
+      transform: translateY(-50%);
+      border-top: 1px solid #d1d5db;
+      pointer-events: none;
+    }
+
+    .mly-divider-node[data-size='4']:not(
+        :where([class~='not-prose'], [class~='not-prose'] *)
+      ) {
+      height: 4px !important;
+    }
+
+    .mly-divider-node[data-size='8']:not(
+        :where([class~='not-prose'], [class~='not-prose'] *)
+      ) {
+      height: 8px !important;
+    }
+
+    .mly-divider-node[data-size='16']:not(
+        :where([class~='not-prose'], [class~='not-prose'] *)
+      ) {
+      height: 16px !important;
+    }
+
+    .mly-divider-node[data-size='32']:not(
+        :where([class~='not-prose'], [class~='not-prose'] *)
+      ) {
+      height: 32px !important;
+    }
+
+    .mly-divider-node[data-size='64']:not(
+        :where([class~='not-prose'], [class~='not-prose'] *)
+      ) {
+      height: 64px !important;
     }
 
     .footer:not(:where([class~='not-prose'], [class~='not-prose'] *)) {

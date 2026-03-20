@@ -70,7 +70,23 @@ export const EditorMenuBar = (props: EditorMenuBarProps) => {
       },
       {
         name: 'divider',
-        command: () => editor.chain().focus().setHorizontalRule().run(),
+        command: () => {
+          editor.chain().focus().setHorizontalRule().run()
+
+          const { from } = editor.state.selection
+          const nearbyPositions = [from, from - 1, from - 2, from + 1]
+          const dividerPos = nearbyPositions.find((pos) => {
+            if (pos < 0) {
+              return false
+            }
+
+            return editor.state.doc.nodeAt(pos)?.type.name === 'horizontalRule'
+          })
+
+          if (dividerPos != null) {
+            editor.chain().focus().setNodeSelection(dividerPos).run()
+          }
+        },
         isActive: () => editor.isActive('horizontalRule'),
         group: 'custom',
         icon: SeparatorHorizontal,

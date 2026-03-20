@@ -1,22 +1,15 @@
 import { AllowedLogoSize, allowedLogoSize } from '@/editor/nodes/logo/logo';
-import { getNewHeight, getNewWidth } from '@/editor/utils/aspect-ratio';
 import { borderRadius } from '@/editor/utils/border-radius';
 import { BubbleMenu } from '@tiptap/react';
-import { ImageDown, LockIcon, LockOpenIcon } from 'lucide-react';
+import { LockIcon, LockOpenIcon } from 'lucide-react';
 import { sticky } from 'tippy.js';
 import { AlignmentSwitch } from '../alignment-switch';
 import { BubbleMenuButton } from '../bubble-menu-button';
 import { EditorBubbleMenuProps } from '../text-menu/text-bubble-menu';
 import { Divider } from '../ui/divider';
-import { LinkInputPopover } from '../ui/link-input-popover';
 import { Select } from '../ui/select';
 import { TooltipProvider } from '../ui/tooltip';
-import { ImageSize } from './image-size';
 import { useImageState } from './use-image-state';
-import {
-  IMAGE_MAX_HEIGHT,
-  IMAGE_MAX_WIDTH,
-} from '@/editor/nodes/image/image-view';
 
 export function ImageBubbleMenu(props: EditorBubbleMenuProps) {
   const { editor, appendTo } = props;
@@ -51,7 +44,7 @@ export function ImageBubbleMenu(props: EditorBubbleMenuProps) {
   return (
     <BubbleMenu
       {...bubbleMenuProps}
-      className="mly:flex mly:rounded-lg mly:border mly:border-gray-200 mly:bg-white mly:p-0.5 mly:shadow-md"
+      className="menu-surface image-menu-surface mly:flex mly:rounded-lg mly:border mly:border-gray-200 mly:bg-white mly:p-0.5 mly:shadow-md"
     >
       <TooltipProvider>
         {state.isLogoActive && state.imageSrc && (
@@ -77,7 +70,7 @@ export function ImageBubbleMenu(props: EditorBubbleMenuProps) {
           </>
         )}
 
-        <div className="mly:flex mly:gap-x-0.5">
+        <div className="menu-inline-gap mly:flex mly:gap-x-0.5">
           <AlignmentSwitch
             alignment={state.alignment}
             onAlignmentChange={(alignment) => {
@@ -94,50 +87,6 @@ export function ImageBubbleMenu(props: EditorBubbleMenuProps) {
             }}
           />
 
-          <LinkInputPopover
-            defaultValue={state?.imageSrc ?? ''}
-            onValueChange={(value, isVariable) => {
-              if (state.isLogoActive) {
-                editor
-                  ?.chain()
-                  .setLogoAttributes({
-                    src: value,
-                    isSrcVariable: isVariable ?? false,
-                  })
-                  .run();
-              } else {
-                editor
-                  ?.chain()
-                  .updateAttributes('image', {
-                    src: value,
-                    isSrcVariable: isVariable ?? false,
-                  })
-                  .run();
-              }
-            }}
-            tooltip="Source URL"
-            icon={ImageDown}
-            editor={editor}
-            isVariable={state.isSrcVariable}
-          />
-
-          {state.isImageActive && (
-            <LinkInputPopover
-              defaultValue={state?.imageExternalLink ?? ''}
-              onValueChange={(value, isVariable) => {
-                editor
-                  ?.chain()
-                  .updateAttributes('image', {
-                    externalLink: value,
-                    isExternalLinkVariable: isVariable ?? false,
-                  })
-                  .run();
-              }}
-              tooltip="External URL"
-              editor={editor}
-              isVariable={state.isExternalLinkVariable}
-            />
-          )}
         </div>
 
         {state.isImageActive && state.imageSrc && (
@@ -163,58 +112,7 @@ export function ImageBubbleMenu(props: EditorBubbleMenuProps) {
               className="mly:capitalize"
             />
 
-            <div className="mly:flex mly:gap-x-0.5">
-              <ImageSize
-                dimension="width"
-                value={state?.width ?? ''}
-                onValueChange={(value) => {
-                  const width = Math.min(Number(value) || 0, IMAGE_MAX_WIDTH);
-                  const currentHeight = Number(state.height) || 0;
-                  const currentWidth = Number(state.width) || 0;
-                  const currentAspectRatio =
-                    state.aspectRatio || currentWidth / currentHeight || 1;
-
-                  editor
-                    ?.chain()
-                    .updateAttributes('image', {
-                      width: String(width),
-                      ...(lockAspectRatio && value
-                        ? {
-                            height: String(
-                              getNewHeight(width, currentAspectRatio)
-                            ),
-                          }
-                        : {}),
-                    })
-                    .run();
-                }}
-              />
-              <ImageSize
-                dimension="height"
-                value={state?.height ?? ''}
-                onValueChange={(value) => {
-                  const height = Number(value) || 0;
-                  const currentHeight = Number(state.height) || 0;
-                  const currentWidth = Number(state.width) || 0;
-                  const currentAspectRatio =
-                    state.aspectRatio || currentWidth / currentHeight || 1;
-
-                  editor
-                    ?.chain()
-                    .updateAttributes('image', {
-                      height: String(height),
-                      ...(lockAspectRatio && value
-                        ? {
-                            width: String(
-                              getNewWidth(height, currentAspectRatio)
-                            ),
-                          }
-                        : {}),
-                    })
-                    .run();
-                }}
-              />
-
+            <div className="menu-inline-gap mly:flex mly:gap-x-0.5">
               <BubbleMenuButton
                 isActive={() => lockAspectRatio}
                 command={() => {

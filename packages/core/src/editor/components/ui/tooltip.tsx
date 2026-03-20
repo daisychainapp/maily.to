@@ -9,7 +9,11 @@ const TooltipProvider: React.FC<
   React.ComponentPropsWithoutRef<typeof TooltipPrimitive.Provider> & {
     children?: React.ReactNode;
   }
-> = TooltipPrimitive.Provider;
+> = ({ children, ...props }) => (
+  <TooltipPrimitive.Provider delayDuration={80} skipDelayDuration={120} {...props}>
+    {children}
+  </TooltipPrimitive.Provider>
+);
 
 const Tooltip: React.FC<
   React.ComponentPropsWithoutRef<typeof TooltipPrimitive.Root> & {

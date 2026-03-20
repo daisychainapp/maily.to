@@ -93,7 +93,7 @@ export function SectionBubbleMenu(props: EditorBubbleMenuProps) {
   return (
     <BubbleMenu
       {...bubbleMenuProps}
-      className="mly:flex mly:items-stretch mly:rounded-lg mly:border mly:border-gray-200 mly:bg-white mly:p-0.5 mly:shadow-md"
+      className="menu-surface menu-inline-gap mly:flex mly:items-stretch mly:rounded-lg mly:border mly:border-gray-200 mly:bg-white mly:p-0.5 mly:shadow-md"
     >
       <TooltipProvider>
         <AlignmentSwitch
@@ -107,7 +107,7 @@ export function SectionBubbleMenu(props: EditorBubbleMenuProps) {
 
         <Divider />
 
-        <div className="mly:flex mly:gap-x-0.5">
+        <div className="menu-inline-gap mly:flex mly:gap-x-0.5">
           <Select
             label="Border Radius"
             value={String(state.currentBorderRadius)}
@@ -196,7 +196,7 @@ export function SectionBubbleMenu(props: EditorBubbleMenuProps) {
 
         <Divider />
 
-        <div className="mly:flex mly:gap-x-0.5">
+        <div className="menu-inline-gap mly:flex mly:gap-x-0.5">
           <ColorPicker
             color={state.currentBorderColor}
             onColorChange={(color) => {
@@ -208,7 +208,7 @@ export function SectionBubbleMenu(props: EditorBubbleMenuProps) {
           >
             <BaseButton
               variant="ghost"
-              className="mly:h-7 mly:w-7 mly:shrink-0"
+              className="menu-option mly:h-7 mly:w-7 mly:shrink-0"
               size="sm"
               type="button"
             >
@@ -248,12 +248,12 @@ export function SectionBubbleMenu(props: EditorBubbleMenuProps) {
           <>
             <Divider />
             <Popover>
-              <PopoverTrigger className="mly:flex mly:items-center mly:gap-1 mly:rounded-md mly:px-1.5 mly:text-sm mly:data-[state=open]:bg-soft-gray mly:hover:bg-soft-gray">
+              <PopoverTrigger className="menu-option mly:flex mly:items-center mly:gap-1 mly:rounded-md mly:px-1.5 mly:text-sm mly:data-[state=open]:bg-soft-gray mly:hover:bg-soft-gray">
                 Column
                 <ChevronUp className="mly:h-3 mly:w-3" />
               </PopoverTrigger>
               <PopoverContent
-                className="mly:w-max mly:rounded-lg mly:p-0.5!"
+                className="menu-dropdown-surface mly:w-max mly:rounded-lg mly:p-0.5!"
                 side="top"
                 sideOffset={8}
                 align="end"
